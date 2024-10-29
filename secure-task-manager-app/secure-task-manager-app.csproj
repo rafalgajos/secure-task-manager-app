@@ -49,6 +49,9 @@
 	<PropertyGroup>
 	  <NoWarn>NETSDK1202;MT0079</NoWarn>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-ios'">
+	    <PublishTrimmed>true</PublishTrimmed>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
