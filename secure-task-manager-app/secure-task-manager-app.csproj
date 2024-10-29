@@ -46,6 +46,9 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
 	  <CreatePackage>false</CreatePackage>
 	</PropertyGroup>
+	<PropertyGroup>
+	  <NoWarn>NETSDK1202;MT0079</NoWarn>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
