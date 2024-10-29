@@ -1,0 +1,15 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="secure_task_manager_app.Views.TaskDetailPage"
+             Title="Task Details">
+    <ContentPage.Content>
+        <StackLayout Padding="20">
+            <Entry Placeholder="Title" Text="{Binding Task.Title}" />
+            <Editor Placeholder="Description" Text="{Binding Task.Description}" HeightRequest="100"/>
+            <DatePicker Date="{Binding Task.DueDate}" />
+            <Switch IsToggled="{Binding Task.Completed}" />
+            <Button Text="Save" Clicked="OnSaveClicked" />
+            <Button Text="Delete" Clicked="OnDeleteClicked" IsVisible="{Binding IsEditMode}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
