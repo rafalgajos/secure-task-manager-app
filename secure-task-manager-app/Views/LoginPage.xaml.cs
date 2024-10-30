@@ -1,32 +1,43 @@
 ﻿using secure_task_manager_app.Models;
 using secure_task_manager_app.Services;
+using System;
 
-namespace secure_task_manager_app.Views;
-
-public partial class LoginPage : ContentPage
+namespace secure_task_manager_app.Views
 {
-    private readonly ApiService _apiService = new ApiService();
-
-    public LoginPage()
+    public partial class LoginPage : ContentPage
     {
-        InitializeComponent();
-    }
+        private readonly ApiService _apiService = new ApiService();
 
-    private async void OnLoginClicked(object sender, EventArgs e)
-    {
-        var user = new User
+        public LoginPage()
         {
-            Username = UsernameEntry.Text,
-            Password = PasswordEntry.Text
-        };
-
-        if (await _apiService.LoginAsync(user))
-        {
-            await Navigation.PushAsync(new TaskListPage());
+            InitializeComponent();
         }
-        else
+
+        // Po udanym logowaniu na LoginPage
+        private async void OnLoginClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Error", "Invalid credentials", "OK");
+            var user = new User
+            {
+                Username = UsernameEntry.Text,
+                Password = PasswordEntry.Text
+            };
+
+            bool isLoggedIn = await _apiService.LoginAsync(user);
+            if (isLoggedIn)
+            {
+                // Przejdź do TaskListPage, gdzie zostanie wywołane GetTasksAsync
+                await Navigation.PushAsync(new TaskListPage());
+            }
+            else
+            {
+                await DisplayAlert("Error", "Invalid username or password", "OK");
+            }
+        }
+
+
+        private async void OnRegisterClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new RegisterPage());
         }
     }
 }

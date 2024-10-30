@@ -1,11 +1,10 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="secure_task_manager_app.Views.LoginPage"
-             Title="Login">
+             x:Class="secure_task_manager_app.Views.RegisterPage"
+             Title="Register">
     <StackLayout Padding="20" VerticalOptions="Center">
         <Entry Placeholder="Username" x:Name="UsernameEntry" />
         <Entry Placeholder="Password" x:Name="PasswordEntry" IsPassword="True" />
-        <Button Text="Login" Clicked="OnLoginClicked" />
         <Button Text="Register" Clicked="OnRegisterClicked" />
     </StackLayout>
 </ContentPage>

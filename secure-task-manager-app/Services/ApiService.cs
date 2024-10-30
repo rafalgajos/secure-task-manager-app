@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using secure_task_manager_app.Models;
-using Newtonsoft.Json;
 
 namespace secure_task_manager_app.Services
 {
     public class ApiService
     {
-        private readonly HttpClient _httpClient;
-        private const string BaseUrl = "https://127.0.0.1:8443"; // URL backendu
+        private static readonly HttpClient _httpClient;
+        private static string _jwtToken; // Zmieniona na statyczną, aby zapewnić trwałość między wywołaniami metod
 
-        public ApiService()
+        static ApiService()
         {
-            // Konfiguracja ignorowania certyfikatu SSL
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
 
@@ -22,52 +24,101 @@ namespace secure_task_manager_app.Services
             };
         }
 
-        // Logowanie użytkownika
+        private void SetJwtToken(string jwtToken)
+        {
+            _jwtToken = jwtToken;
+            Console.WriteLine($"_jwtToken in SetJwtToken: {_jwtToken}");
+        }
+
+        // Metoda rejestracji użytkownika
+        public async Task<bool> RegisterAsync(User user)
+        {
+            var response = await _httpClient.PostAsJsonAsync("/register", user);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<bool> LoginAsync(User user)
         {
-            var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/login", user);
+            var response = await _httpClient.PostAsJsonAsync("/login", user);
 
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                user.Token = JsonConvert.DeserializeObject<dynamic>(content).token;
-                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", user.Token);
+                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+                string token = result.token;
+
+                SetJwtToken(token);
+                Console.WriteLine($"_jwtToken after LoginAsync: {_jwtToken}");
                 return true;
             }
+            Console.WriteLine("Login failed");
             return false;
         }
 
-        // Pobieranie listy zadań
         public async Task<List<Models.Task>> GetTasksAsync()
         {
-            var response = await _httpClient.GetAsync($"{BaseUrl}/tasks");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return await response.Content.ReadFromJsonAsync<List<Models.Task>>();
+                if (string.IsNullOrEmpty(_jwtToken))
+                {
+                    Console.WriteLine("Token missing or expired, re-login required.");
+                    return null;
+                }
+
+                var request = new HttpRequestMessage(HttpMethod.Get, "/tasks");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+
+                Console.WriteLine($"Authorization Header in GetTasksAsync: {request.Headers.Authorization}");
+
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<List<Models.Task>>();
+                }
+                else
+                {
+                    Console.WriteLine($"Error fetching tasks: {response.ReasonPhrase}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error fetching tasks: {ex.Message}");
             }
             return null;
         }
 
-        // Dodawanie nowego zadania
         public async Task<bool> AddTaskAsync(Models.Task task)
         {
-            var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/tasks", task);
+            var request = new HttpRequestMessage(HttpMethod.Post, "/tasks")
+            {
+                Content = JsonContent.Create(task)
+            };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+
+            var response = await _httpClient.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
-        // Aktualizacja zadania
         public async Task<bool> UpdateTaskAsync(Models.Task task)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{BaseUrl}/tasks/{task.Id}", task);
+            var request = new HttpRequestMessage(HttpMethod.Put, $"/tasks/{task.Id}")
+            {
+                Content = JsonContent.Create(task)
+            };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+
+            var response = await _httpClient.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
-        // Usuwanie zadania
         public async Task<bool> DeleteTaskAsync(int taskId)
         {
-            var response = await _httpClient.DeleteAsync($"{BaseUrl}/tasks/{taskId}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"/tasks/{taskId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+
+            var response = await _httpClient.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
     }
 }
-
