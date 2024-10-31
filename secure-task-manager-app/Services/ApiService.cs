@@ -11,26 +11,36 @@ namespace secure_task_manager_app.Services
     public class ApiService
     {
         private static readonly HttpClient _httpClient;
-        private static string _jwtToken; // Zmieniona na statyczną, aby zapewnić trwałość między wywołaniami metod
 
         static ApiService()
         {
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
-
+            // Wymaga pełnej weryfikacji SSL (należy usunąć wszelkie wyłączenia weryfikacji SSL w środowisku produkcyjnym)
             _httpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri("https://127.0.0.1:8443")
             };
         }
 
-        private void SetJwtToken(string jwtToken)
+        private async System.Threading.Tasks.Task SetJwtToken(string jwtToken)
         {
-            _jwtToken = jwtToken;
-            Console.WriteLine($"_jwtToken in SetJwtToken: {_jwtToken}");
+            // Zapisz token JWT w zaszyfrowanym pliku lokalnym
+            await SecureTokenStorage.SaveTokenAsync(jwtToken);
         }
 
-        // Metoda rejestracji użytkownika
+        private async Task<string> GetJwtToken()
+        {
+            // Odczytaj token JWT z zaszyfrowanego pliku lokalnego
+            return await SecureTokenStorage.GetTokenAsync();
+        }
+
+        private void ClearJwtToken()
+        {
+            // Usuń token JWT z zaszyfrowanego pliku lokalnego
+            SecureTokenStorage.ClearToken();
+        }
+
         public async Task<bool> RegisterAsync(User user)
         {
             var response = await _httpClient.PostAsJsonAsync("/register", user);
@@ -47,10 +57,11 @@ namespace secure_task_manager_app.Services
                 dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
                 string token = result.token;
 
-                SetJwtToken(token);
-                Console.WriteLine($"_jwtToken after LoginAsync: {_jwtToken}");
+                await SetJwtToken(token); // Zapis tokenu w zaszyfrowanym pliku
+                Console.WriteLine("Login successful and JWT token stored securely.");
                 return true;
             }
+
             Console.WriteLine("Login failed");
             return false;
         }
@@ -59,16 +70,16 @@ namespace secure_task_manager_app.Services
         {
             try
             {
-                if (string.IsNullOrEmpty(_jwtToken))
+                var token = await GetJwtToken(); // Odczyt tokenu z zaszyfrowanego pliku
+
+                if (string.IsNullOrEmpty(token))
                 {
                     Console.WriteLine("Token missing or expired, re-login required.");
                     return null;
                 }
 
                 var request = new HttpRequestMessage(HttpMethod.Get, "/tasks");
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
-
-                Console.WriteLine($"Authorization Header in GetTasksAsync: {request.Headers.Authorization}");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 var response = await _httpClient.SendAsync(request);
 
@@ -90,11 +101,19 @@ namespace secure_task_manager_app.Services
 
         public async Task<bool> AddTaskAsync(Models.Task task)
         {
+            var token = await GetJwtToken();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("Token missing or expired, re-login required.");
+                return false;
+            }
+
             var request = new HttpRequestMessage(HttpMethod.Post, "/tasks")
             {
                 Content = JsonContent.Create(task)
             };
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _httpClient.SendAsync(request);
             return response.IsSuccessStatusCode;
@@ -102,11 +121,19 @@ namespace secure_task_manager_app.Services
 
         public async Task<bool> UpdateTaskAsync(Models.Task task)
         {
+            var token = await GetJwtToken();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("Token missing or expired, re-login required.");
+                return false;
+            }
+
             var request = new HttpRequestMessage(HttpMethod.Put, $"/tasks/{task.Id}")
             {
                 Content = JsonContent.Create(task)
             };
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _httpClient.SendAsync(request);
             return response.IsSuccessStatusCode;
@@ -114,11 +141,25 @@ namespace secure_task_manager_app.Services
 
         public async Task<bool> DeleteTaskAsync(int taskId)
         {
+            var token = await GetJwtToken();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("Token missing or expired, re-login required.");
+                return false;
+            }
+
             var request = new HttpRequestMessage(HttpMethod.Delete, $"/tasks/{taskId}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _httpClient.SendAsync(request);
             return response.IsSuccessStatusCode;
+        }
+
+        public void Logout()
+        {
+            ClearJwtToken(); // Czyszczenie tokenu przy wylogowaniu
+            Console.WriteLine("User logged out and JWT token removed from secure storage.");
         }
     }
 }
