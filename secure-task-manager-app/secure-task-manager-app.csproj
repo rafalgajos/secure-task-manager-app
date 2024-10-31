@@ -80,10 +80,14 @@
 	  <None Remove="Models\" />
 	  <None Remove="Services\" />
 	  <None Remove="Views\" />
+	  <None Remove="Resources\EmptyJSONFile.json" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Models\" />
 	  <Folder Include="Services\" />
 	  <Folder Include="Views\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="Resources\appicon.svg" />
 	</ItemGroup>
 </Project>
