@@ -73,6 +73,8 @@
 	<ItemGroup>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.10" />
+	  <PackageReference Include="SkiaSharp" Version="2.88.8" />
+	  <PackageReference Include="Svg.Skia" Version="2.0.0.2" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="Models\" />

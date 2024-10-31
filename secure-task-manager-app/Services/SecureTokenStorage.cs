@@ -82,12 +82,9 @@ namespace secure_task_manager_app.Services
         /// </summary>
         private static byte[] GenerateKey(int size)
         {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                var key = new byte[size];
-                rng.GetBytes(key);
-                return key;
-            }
+            var key = new byte[size];
+            RandomNumberGenerator.Fill(key); // Generuje losowy klucz
+            return key;
         }
 
         /// <summary>
@@ -95,12 +92,9 @@ namespace secure_task_manager_app.Services
         /// </summary>
         private static byte[] GenerateIV(int size)
         {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                var iv = new byte[size];
-                rng.GetBytes(iv);
-                return iv;
-            }
+            var iv = new byte[size];
+            RandomNumberGenerator.Fill(iv); // Generuje losowy IV
+            return iv;
         }
     }
 }
