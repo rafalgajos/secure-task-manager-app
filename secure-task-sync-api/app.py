@@ -15,7 +15,7 @@ db.init_app(app)
 CORS(app)
 
 # Blueprint registration
-app.register_blueprint(tasks_api, url_prefix='/tasks')  # Przypisz prefix do tasks API
+app.register_blueprint(tasks_api)
 app.register_blueprint(auth, url_prefix='/auth')        # Przypisz prefix do auth API
 
 # Clickjacking protection headers
