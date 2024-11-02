@@ -9,7 +9,7 @@ namespace secure_task_manager_app.Services
     public static class SecureTokenStorage
     {
         // Ścieżka do pliku, w którym będzie przechowywany zaszyfrowany token
-        private static readonly string FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "token.dat");
+        private static readonly string FilePath = Path.Combine(Path.GetTempPath(), "token.dat");
 
         // Wartości klucza i IV - w produkcji powinny być generowane bezpiecznie i przechowywane w bezpiecznym magazynie.
         private static readonly byte[] Key = GenerateKey(32); // AES-256 wymaga klucza o długości 32 bajtów.
