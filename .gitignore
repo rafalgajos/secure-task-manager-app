@@ -404,3 +404,4 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 secure-task-sync-api/tasks.db
+secure-task-sync-api/ngrok_url.txt
