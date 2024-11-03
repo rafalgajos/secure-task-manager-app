@@ -81,13 +81,33 @@
 	  <None Remove="Services\" />
 	  <None Remove="Views\" />
 	  <None Remove="Resources\EmptyJSONFile.json" />
+	  <None Remove="Platforms\Android\Resources\mipmap-hdpi\appicon.png" />
+	  <None Remove="Platforms\Android\Resources\mipmap-hdpi\" />
+	  <None Remove="Platforms\Android\Resources\mipmap-mdpi\appicon.png" />
+	  <None Remove="Platforms\Android\Resources\mipmap-mdpi\" />
+	  <None Remove="Platforms\Android\Resources\mipmap-xhdpi\appicon.png" />
+	  <None Remove="Platforms\Android\Resources\mipmap-xhdpi\" />
+	  <None Remove="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
+	  <None Remove="Platforms\Android\Resources\mipmap-xxhdpi\" />
+	  <None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
+	  <None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Models\" />
 	  <Folder Include="Services\" />
 	  <Folder Include="Views\" />
+	  <Folder Include="Platforms\Android\Resources\mipmap-hdpi\" />
+	  <Folder Include="Platforms\Android\Resources\mipmap-mdpi\" />
+	  <Folder Include="Platforms\Android\Resources\mipmap-xhdpi\" />
+	  <Folder Include="Platforms\Android\Resources\mipmap-xxhdpi\" />
+	  <Folder Include="Platforms\Android\Resources\mipmap-xxxhdpi\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <BundleResource Include="Resources\appicon.svg" />
+	  <BundleResource Include="Platforms\Android\Resources\mipmap-hdpi\appicon.png" />
+	  <BundleResource Include="Platforms\Android\Resources\mipmap-mdpi\appicon.png" />
+	  <BundleResource Include="Platforms\Android\Resources\mipmap-xhdpi\appicon.png" />
+	  <BundleResource Include="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
+	  <BundleResource Include="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
 	</ItemGroup>
 </Project>
