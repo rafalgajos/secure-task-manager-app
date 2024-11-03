@@ -1,36 +1,56 @@
-﻿using secure_task_manager_app.Models;
-using secure_task_manager_app.Services;
-using System;
+﻿#if MACCATALYST
+using Foundation;
+using WebKit;
+using Security;
+#endif
 
 namespace secure_task_manager_app.Views
 {
     public partial class RegisterPage : ContentPage
     {
-        private readonly ApiService _apiService = new ApiService();
-
         public RegisterPage()
         {
             InitializeComponent();
-        }
 
-        private async void OnRegisterClicked(object sender, EventArgs e)
-        {
-            var user = new User
+            string registerUrl = "https://127.0.0.1:8443/register_form";
+
+#if MACCATALYST
+            RegisterWebView.HandlerChanged += (s, e) =>
             {
-                Username = UsernameEntry.Text,
-                Password = PasswordEntry.Text
+                if (RegisterWebView.Handler.PlatformView is WKWebView wkWebView)
+                {
+                    wkWebView.NavigationDelegate = new CustomNavigationDelegate();
+                }
             };
+#endif
 
-            bool isRegistered = await _apiService.RegisterAsync(user);
-            if (isRegistered)
+            RegisterWebView.Source = registerUrl;
+        }
+    }
+
+#if MACCATALYST
+    public class CustomNavigationDelegate : WKNavigationDelegate
+    {
+        public override void DidReceiveAuthenticationChallenge(WKWebView webView, NSUrlAuthenticationChallenge challenge, Action<NSUrlSessionAuthChallengeDisposition, NSUrlCredential?> completionHandler)
+        {
+            if (challenge.ProtectionSpace.AuthenticationMethod == "NSURLAuthenticationMethodServerTrust")
             {
-                await DisplayAlert("Success", "Registration successful! Please log in.", "OK");
-                await Navigation.PopAsync(); // Powrót do strony logowania
+                // Sprawdzenie, czy mamy zaufany obiekt SecTrust
+                if (challenge.ProtectionSpace.ServerSecTrust != null)
+                {
+                    var credential = NSUrlCredential.FromTrust(challenge.ProtectionSpace.ServerSecTrust);
+                    completionHandler(NSUrlSessionAuthChallengeDisposition.UseCredential, credential);
+                }
+                else
+                {
+                    completionHandler(NSUrlSessionAuthChallengeDisposition.PerformDefaultHandling, null);
+                }
             }
             else
             {
-                await DisplayAlert("Error", "Registration failed. Try again.", "OK");
+                completionHandler(NSUrlSessionAuthChallengeDisposition.PerformDefaultHandling, null);
             }
         }
     }
+#endif
 }
