@@ -1,9 +1,10 @@
 import subprocess
 import time
 import json
+import os
 
-# Path where we will save the generated URL
-output_file = "ngrok_url.txt"
+# Path where we will save the generated URL (relative path)
+output_file = os.path.join("..", "secure-task-manager-app", "Resources", "ngrok_url.txt")
 
 # Run ngrok in HTTPS tunneling mode on port 8443
 ngrok_process = subprocess.Popen(
@@ -26,11 +27,11 @@ try:
     # Parsing JSON from API responses
     data = json.loads(output)
     if "tunnels" in data and len(data["tunnels"]) > 0:
-        ## Get the first tunnel and its public URL
+        # Get the first tunnel and its public URL
         ngrok_url = data["tunnels"][0].get("public_url", None)
 
         if ngrok_url:
-            # Save the URL to a file
+            # Save the URL to the relative file path
             with open(output_file, "w") as file:
                 file.write(ngrok_url)
 

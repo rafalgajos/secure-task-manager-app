@@ -405,3 +405,4 @@ ASALocalRun/
 .localhistory/
 secure-task-sync-api/tasks.db
 secure-task-sync-api/ngrok_url.txt
+secure-task-manager-app/Resources/ngrok_url.txt
