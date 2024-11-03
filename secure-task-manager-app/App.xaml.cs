@@ -17,7 +17,8 @@ namespace secure_task_manager_app
             Task.Run(async () =>
             {
                 ApiBaseUrl = await LoadNgrokUrl();
-            }).Wait(); // Poczekaj na zakończenie wczytywania URL-a
+                Console.WriteLine($"Loaded ApiBaseUrl: {ApiBaseUrl}");
+            }).Wait();
 
             // Ustawienie strony początkowej
             MainPage = new NavigationPage(new Views.LoginPage());
@@ -27,12 +28,14 @@ namespace secure_task_manager_app
         {
             try
             {
-                // Wczytaj plik ngrok_url.txt z zasobów pakietu aplikacji
+                Console.WriteLine("Attempting to load ngrok URL from ngrok_url.txt in Raw folder");
+
+                // Wczytaj plik ngrok_url.txt z zasobów aplikacji
                 using var stream = await FileSystem.OpenAppPackageFileAsync("ngrok_url.txt");
                 using var reader = new StreamReader(stream);
 
                 string url = await reader.ReadToEndAsync();
-                return url.Trim();
+                return url.Trim(); // usuwa białe znaki, aby upewnić się, że URL jest prawidłowy
             }
             catch (Exception ex)
             {

@@ -4,7 +4,7 @@ import json
 import os
 
 # Path where we will save the generated URL (relative path)
-output_file = os.path.join("..", "secure-task-manager-app", "Resources", "ngrok_url.txt")
+output_file = os.path.join("..", "secure-task-manager-app", "Resources", "Raw", "ngrok_url.txt")
 
 # Run ngrok in HTTPS tunneling mode on port 8443
 ngrok_process = subprocess.Popen(

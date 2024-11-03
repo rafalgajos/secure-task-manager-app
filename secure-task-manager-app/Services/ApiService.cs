@@ -17,11 +17,10 @@ namespace secure_task_manager_app.Services
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
 
-            // Ustawienie BaseAddress na wartość dynamicznie wczytaną z App.ApiBaseUrl
-            string baseUrl = App.ApiBaseUrl ?? "https://127.0.0.1:8443";  // Domyślny adres w razie braku URL-a
+            // Ustawienie BaseAddress na sztywny adres URL
             _httpClient = new HttpClient(handler)
             {
-                BaseAddress = new Uri(baseUrl)
+                BaseAddress = new Uri(App.ApiBaseUrl)
             };
         }
 

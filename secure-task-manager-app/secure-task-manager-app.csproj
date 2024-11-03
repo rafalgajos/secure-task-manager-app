@@ -3,8 +3,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios;net6.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks>
-		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net6.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>secure_task_manager_app</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -32,9 +30,7 @@
 
 		<!-- Disable trimming to avoid PublishTrimmed errors -->
 		<PublishTrimmed>false</PublishTrimmed>
-
-    <!-- Włączenie PublishTrimmed dla MacCatalyst -->
-    <PublishTrimmed Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</PublishTrimmed>
+		<PublishTrimmed Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</PublishTrimmed>
 
 		<!-- Linker setting to avoid errors in MacCatalyst -->
 		<MtouchLink>SdkOnly</MtouchLink>
@@ -44,17 +40,19 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
+		<CreatePackage>false</CreatePackage>
 	</PropertyGroup>
 	<PropertyGroup>
-	  <NoWarn>NETSDK1202;MT0079</NoWarn>
+		<NoWarn>NETSDK1202;MT0079</NoWarn>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-ios'">
-	    <PublishTrimmed>true</PublishTrimmed>
+		<PublishTrimmed>true</PublishTrimmed>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<MauiAsset Include="Resources\ngrok_url.txt" />
+		<!-- Usunięto osobny wpis dla ngrok_url.txt i uwzględniono cały katalog Raw -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
@@ -67,48 +65,49 @@
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
+	</ItemGroup>
 
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	  <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.10" />
-	  <PackageReference Include="SkiaSharp" Version="2.88.8" />
-	  <PackageReference Include="Svg.Skia" Version="2.0.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.10" />
+		<PackageReference Include="SkiaSharp" Version="2.88.8" />
+		<PackageReference Include="Svg.Skia" Version="2.0.0.2" />
 	</ItemGroup>
+
 	<ItemGroup>
-	  <None Remove="Models\" />
-	  <None Remove="Services\" />
-	  <None Remove="Views\" />
-	  <None Remove="Resources\EmptyJSONFile.json" />
-	  <None Remove="Platforms\Android\Resources\mipmap-hdpi\appicon.png" />
-	  <None Remove="Platforms\Android\Resources\mipmap-hdpi\" />
-	  <None Remove="Platforms\Android\Resources\mipmap-mdpi\appicon.png" />
-	  <None Remove="Platforms\Android\Resources\mipmap-mdpi\" />
-	  <None Remove="Platforms\Android\Resources\mipmap-xhdpi\appicon.png" />
-	  <None Remove="Platforms\Android\Resources\mipmap-xhdpi\" />
-	  <None Remove="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
-	  <None Remove="Platforms\Android\Resources\mipmap-xxhdpi\" />
-	  <None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
-	  <None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\" />
+		<None Remove="Models\" />
+		<None Remove="Services\" />
+		<None Remove="Views\" />
+		<None Remove="Resources\EmptyJSONFile.json" />
+		<None Remove="Platforms\Android\Resources\mipmap-hdpi\appicon.png" />
+		<None Remove="Platforms\Android\Resources\mipmap-hdpi\" />
+		<None Remove="Platforms\Android\Resources\mipmap-mdpi\appicon.png" />
+		<None Remove="Platforms\Android\Resources\mipmap-mdpi\" />
+		<None Remove="Platforms\Android\Resources\mipmap-xhdpi\appicon.png" />
+		<None Remove="Platforms\Android\Resources\mipmap-xhdpi\" />
+		<None Remove="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
+		<None Remove="Platforms\Android\Resources\mipmap-xxhdpi\" />
+		<None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
+		<None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\" />
 	</ItemGroup>
+
 	<ItemGroup>
-	  <Folder Include="Models\" />
-	  <Folder Include="Services\" />
-	  <Folder Include="Views\" />
-	  <Folder Include="Platforms\Android\Resources\mipmap-hdpi\" />
-	  <Folder Include="Platforms\Android\Resources\mipmap-mdpi\" />
-	  <Folder Include="Platforms\Android\Resources\mipmap-xhdpi\" />
-	  <Folder Include="Platforms\Android\Resources\mipmap-xxhdpi\" />
-	  <Folder Include="Platforms\Android\Resources\mipmap-xxxhdpi\" />
+		<Folder Include="Models\" />
+		<Folder Include="Services\" />
+		<Folder Include="Views\" />
+		<Folder Include="Platforms\Android\Resources\mipmap-hdpi\" />
+		<Folder Include="Platforms\Android\Resources\mipmap-mdpi\" />
+		<Folder Include="Platforms\Android\Resources\mipmap-xhdpi\" />
+		<Folder Include="Platforms\Android\Resources\mipmap-xxhdpi\" />
+		<Folder Include="Platforms\Android\Resources\mipmap-xxxhdpi\" />
 	</ItemGroup>
+
 	<ItemGroup>
-	  <BundleResource Include="Resources\appicon.svg" />
-	  <BundleResource Include="Platforms\Android\Resources\mipmap-hdpi\appicon.png" />
-	  <BundleResource Include="Platforms\Android\Resources\mipmap-mdpi\appicon.png" />
-	  <BundleResource Include="Platforms\Android\Resources\mipmap-xhdpi\appicon.png" />
-	  <BundleResource Include="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
-	  <BundleResource Include="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
+		<BundleResource Include="Resources\appicon.svg" />
+		<BundleResource Include="Platforms\Android\Resources\mipmap-hdpi\appicon.png" />
+		<BundleResource Include="Platforms\Android\Resources\mipmap-mdpi\appicon.png" />
+		<BundleResource Include="Platforms\Android\Resources\mipmap-xhdpi\appicon.png" />
+		<BundleResource Include="Platforms\Android\Resources\mipmap-xxhdpi\appicon.png" />
+		<BundleResource Include="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
 	</ItemGroup>
 </Project>
