@@ -16,10 +16,12 @@ namespace secure_task_manager_app.Services
         {
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
-            // Wymaga pełnej weryfikacji SSL (należy usunąć wszelkie wyłączenia weryfikacji SSL w środowisku produkcyjnym)
+
+            // Ustawienie BaseAddress na wartość dynamicznie wczytaną z App.ApiBaseUrl
+            string baseUrl = App.ApiBaseUrl ?? "https://127.0.0.1:8443";  // Domyślny adres w razie braku URL-a
             _httpClient = new HttpClient(handler)
             {
-                BaseAddress = new Uri("https://127.0.0.1:8443")
+                BaseAddress = new Uri(baseUrl)
             };
         }
 

@@ -1,8 +1,5 @@
-﻿#if MACCATALYST
-using Foundation;
-using WebKit;
-using Security;
-#endif
+﻿using secure_task_manager_app.Views;
+using Microsoft.Maui.Controls;
 
 namespace secure_task_manager_app.Views
 {
@@ -12,45 +9,9 @@ namespace secure_task_manager_app.Views
         {
             InitializeComponent();
 
-            string registerUrl = "https://127.0.0.1:8443/register_form";
-
-#if MACCATALYST
-            RegisterWebView.HandlerChanged += (s, e) =>
-            {
-                if (RegisterWebView.Handler.PlatformView is WKWebView wkWebView)
-                {
-                    wkWebView.NavigationDelegate = new CustomNavigationDelegate();
-                }
-            };
-#endif
-
+            // Ustaw URL endpointu rejestracji na dynamicznie załadowany adres
+            string registerUrl = $"{App.ApiBaseUrl}/register_form";
             RegisterWebView.Source = registerUrl;
         }
     }
-
-#if MACCATALYST
-    public class CustomNavigationDelegate : WKNavigationDelegate
-    {
-        public override void DidReceiveAuthenticationChallenge(WKWebView webView, NSUrlAuthenticationChallenge challenge, Action<NSUrlSessionAuthChallengeDisposition, NSUrlCredential?> completionHandler)
-        {
-            if (challenge.ProtectionSpace.AuthenticationMethod == "NSURLAuthenticationMethodServerTrust")
-            {
-                // Sprawdzenie, czy mamy zaufany obiekt SecTrust
-                if (challenge.ProtectionSpace.ServerSecTrust != null)
-                {
-                    var credential = NSUrlCredential.FromTrust(challenge.ProtectionSpace.ServerSecTrust);
-                    completionHandler(NSUrlSessionAuthChallengeDisposition.UseCredential, credential);
-                }
-                else
-                {
-                    completionHandler(NSUrlSessionAuthChallengeDisposition.PerformDefaultHandling, null);
-                }
-            }
-            else
-            {
-                completionHandler(NSUrlSessionAuthChallengeDisposition.PerformDefaultHandling, null);
-            }
-        }
-    }
-#endif
 }
