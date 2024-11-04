@@ -10,11 +10,30 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal" Padding="10">
+                            <StackLayout Orientation="Horizontal" Padding="10" VerticalOptions="Center">
+                                
+                                <!-- Task status icon -->
+                                <Image WidthRequest="20" HeightRequest="20">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="cross.png" /> <!-- Default X icon -->
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Image" Binding="{Binding Completed}" Value="True">
+                                                    <Setter Property="Source" Value="checkmark.png" /> <!-- Checkmark icon when task completed -->
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+
+                                <!-- Title of task -->
                                 <Label Text="{Binding Title}" 
                                        VerticalOptions="Center" 
                                        FontSize="Medium" 
-                                       FontAttributes="Bold" />
+                                       FontAttributes="Bold"
+                                       Margin="10,0,0,0" />
+
+                                <!-- Date of completion of the task -->
                                 <Label Text="{Binding DueDate, StringFormat='{0:yyyy-MM-dd}'}" 
                                        VerticalOptions="Center" 
                                        FontSize="Small" 
