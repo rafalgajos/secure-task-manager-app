@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="210mm" height="210mm" version="1.1" viewBox="0 0 744.09449 744.09448" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="t" x1="-371.95" x2="-139.64" y1="1080.8" y2="880.6" gradientTransform="matrix(1.2935 0 0 1.2917 592.85 -465.22)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#d2ce9f" offset="0"/>
+   <stop stop-color="#f4f0bc" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <filter id="n" x="-.064751" y="-.062489" width="1.1295" height="1.125" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="12.12991"/>
+  </filter>
+  <filter id="k" x="-.094318" y="-.1649" width="1.1886" height="1.3298" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="1.0859083"/>
+  </filter>
+  <filter id="p" x="-.95534" y="-.064021" width="2.9107" height="1.128" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="2.2027507"/>
+  </filter>
+  <filter id="q" x="-1.6364" y="-.062284" width="4.2729" height="1.1246" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="2.1387328"/>
+  </filter>
+  <filter id="r" x="-1.2692" y="-.062977" width="3.5385" height="1.126" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="2.1612205"/>
+  </filter>
+  <linearGradient id="s" x1="-68.059" x2="-90.327" y1="237.7" y2="271.89" gradientTransform="matrix(.5656 0 0 .59409 -410.93 67.723)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#f00" offset="0"/>
+   <stop stop-color="#800000" offset="1"/>
+  </linearGradient>
+  <filter id="o" x="-.29066" y="-.32574" width="1.5813" height="1.6515" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="2.4689395"/>
+  </filter>
+  <filter id="l" x="-.094318" y="-.1649" width="1.1886" height="1.3298" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="1.0859083"/>
+  </filter>
+  <filter id="m" x="-.14478" y="-.35768" width="1.2896" height="1.7154" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="1.8277564"/>
+  </filter>
+ </defs>
+ <g transform="translate(0 -308.27)">
+  <path transform="matrix(1.2935 0 0 1.2917 -92.952 212.37)" d="m176.16 175.39 394.2-25.95 6.1786 108.74c3.3522 87.647-0.63314 282.86-24.714 357.12l-423.85-9.8858c27.538-131.87 46.928-271.89 48.193-430.03z" fill="#999" fill-rule="evenodd" filter="url(#n)"/>
+  <path d="m121.6 435.55 498.87-41.946 7.2326 140.51c3.7241 113.24-2.7936 365.38-34.46 461.13l-548.17-15.725c31.745-181.32 64.196-331.72 76.526-543.97z" fill="#c7c78f" fill-rule="evenodd"/>
+  <path d="m117.44 415.21 509.88-33.521 7.9919 140.47c4.336 113.22-0.81895 365.39-31.968 461.31l-548.24-12.77c35.62-170.34 60.7-351.21 62.337-555.49z" fill="#f4f0bc" fill-rule="evenodd"/>
+  <path d="m119.94 414.51 509.88-33.521 7.9919 140.47c4.336 113.22-0.81895 365.39-31.968 461.31l-548.24-12.77c35.62-170.34 60.7-351.21 62.337-555.49z" fill="url(#t)" fill-rule="evenodd" opacity=".45"/>
+  <g transform="matrix(1.2935 0 0 1.2917 -56.646 -145.74)">
+   <ellipse transform="matrix(2.4426 -.19445 .27303 2.1151 -405.28 -434.66)" cx="253.35" cy="441.37" rx="14.725" ry="6.0411" fill="#ccc" filter="url(#k)" opacity=".6"/>
+   <ellipse transform="matrix(1.9355 -.12998 .21634 1.4138 -250.73 -140.25)" cx="253.35" cy="441.37" rx="14.725" ry="6.0411" fill="#4d4d4d" filter="url(#l)" opacity=".6"/>
+   <ellipse transform="matrix(1.214 -.062769 .1357 .68277 -31.901 165.91)" cx="253.35" cy="441.37" rx="14.725" ry="6.0411" fill="#666" filter="url(#m)"/>
+   <g transform="matrix(.98017 -.19816 .19816 .98017 579.3 299.21)">
+    <path d="m-241.36 60.684-22.887 41.571-5.232 1.3301c-0.34398 0.34254-4.1504-1.0834-4.6971-2.1066l0.16288-5.9091c7.9678-14.47 16.063-29.175 22.887-41.571z" fill="#999"/>
+    <path transform="matrix(-.53686 -.36751 -.32959 .59864 -203.55 -134.63)" d="m-91.711 268.27v69.441l4.628 4.5992-1.4913-74.041z" fill="#1a1a1a" filter="url(#p)"/>
+    <path transform="matrix(-.53686 -.36751 -.32959 .59864 -203.55 -134.63)" d="m-88.518 268.23v69.441l3.0756-0.12225 0.0611-69.319z" fill="#4d4d4d" filter="url(#q)"/>
+    <path transform="matrix(-.53686 -.36751 -.32959 .59864 -203.55 -134.63)" d="m-81.548 268.35v69.441l-3.0756-0.12225-0.0611-69.319z" fill="#ccc" filter="url(#r)"/>
+   </g>
+   <ellipse transform="matrix(-.92075 -.39015 -.29913 .95421 0 0)" cx="-457.23" cy="219.65" rx="19.691" ry="19.285" fill="url(#s)"/>
+   <ellipse transform="matrix(-.52078 -.22067 -.17771 .56689 732.64 118.76)" cx="506" cy="656.16" rx="10.193" ry="9.0954" fill="#fff" filter="url(#o)" opacity=".695"/>
+  </g>
+  <g transform="matrix(-6.6037 -.3413 -.34022 6.5629 1641.7 -933.14)" fill="#cdc98f" opacity=".7">
+   <path d="m219.54 250.38c0.31613 15.236 3.9452 39.811 5.6119 51.579l-46.844-1.3588c22.202-3.6905 32.961-27.603 41.233-50.22z" fill="#cdc98f" opacity=".5"/>
+  </g>
+ </g>
+ <!-- Czarny napis "BAM" -->
+ <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="150" fill="black" font-family="Arial" font-weight="bold">BAM</text>
+</svg>

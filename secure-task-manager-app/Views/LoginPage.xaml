@@ -2,10 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="secure_task_manager_app.Views.LoginPage"
              Title="Login">
-    <StackLayout Padding="20" VerticalOptions="Center">
-        <Entry Placeholder="Username" x:Name="UsernameEntry" />
-        <Entry Placeholder="Password" x:Name="PasswordEntry" IsPassword="True" />
-        <Button Text="Login" Clicked="OnLoginClicked" />
-        <Button Text="Register" Clicked="OnRegisterClicked" />
+    <StackLayout Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="20">
+        
+        <!-- SVG logo centered regardless of the width of the other elements -->
+        <Image Source="logo.svg" WidthRequest="180" HeightRequest="180" HorizontalOptions="Center" />
+
+        <!-- Container for full-width login fields and buttons -->
+        <StackLayout WidthRequest="300" HorizontalOptions="CenterAndExpand" Spacing="15">
+            <Entry Placeholder="Username" x:Name="UsernameEntry" />
+            <Entry Placeholder="Password" x:Name="PasswordEntry" IsPassword="True" />
+            <Button Text="Login" Clicked="OnLoginClicked" />
+            <Button Text="Register" Clicked="OnRegisterClicked" />
+        </StackLayout>
+        
     </StackLayout>
 </ContentPage>
