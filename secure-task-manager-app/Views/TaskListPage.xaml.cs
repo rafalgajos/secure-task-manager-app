@@ -39,7 +39,8 @@ namespace secure_task_manager_app.Views
         // Przechodzenie do ekranu dodawania nowego zadania
         private async void OnAddTaskClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new TaskDetailPage(new Models.Task()));
+            var taskDetailPage = new TaskDetailPage(new Models.Task(), LoadTasks);
+            await Navigation.PushAsync(taskDetailPage);
         }
 
         // Edytowanie zadania po tapnięciu
@@ -47,7 +48,8 @@ namespace secure_task_manager_app.Views
         {
             if (e.Item is Models.Task selectedTask)
             {
-                await Navigation.PushAsync(new TaskDetailPage(selectedTask));
+                var taskDetailPage = new TaskDetailPage(selectedTask, LoadTasks);
+                await Navigation.PushAsync(taskDetailPage);
             }
             ((ListView)sender).SelectedItem = null;
         }
