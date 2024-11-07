@@ -6,22 +6,31 @@ namespace secure_task_manager_app.Views
 {
     public partial class TaskListPage : ContentPage
     {
+        private readonly SQLiteService _sqliteService;
         private readonly ApiService _apiService;
         public ObservableCollection<Models.Task> Tasks { get; set; }
 
         public TaskListPage()
         {
             InitializeComponent();
+            _sqliteService = new SQLiteService();
             _apiService = new ApiService();
             Tasks = new ObservableCollection<Models.Task>();
             TasksListView.ItemsSource = Tasks;
+
             LoadTasks();
+
+            // Nasłuchuj wiadomości z LoginPage dotyczącej synchronizacji zadań
+            MessagingCenter.Subscribe<LoginPage>(this, "SyncTasks", async (sender) =>
+            {
+                await SyncTasksWithServer();
+            });
         }
 
-        // Ładowanie zadań z backendu
+        // Ładowanie zadań z lokalnej bazy danych
         private async void LoadTasks()
         {
-            var tasks = await _apiService.GetTasksAsync();
+            var tasks = await _sqliteService.GetTasksAsync();
             if (tasks != null)
             {
                 Tasks.Clear();
@@ -36,10 +45,15 @@ namespace secure_task_manager_app.Views
             }
         }
 
-        // Przechodzenie do ekranu dodawania nowego zadania
+        // Dodawanie nowego zadania
         private async void OnAddTaskClicked(object sender, EventArgs e)
         {
-            var taskDetailPage = new TaskDetailPage(new Models.Task(), LoadTasks);
+            var newTask = new Models.Task();
+            var taskDetailPage = new TaskDetailPage(newTask, async () =>
+            {
+                await _sqliteService.SaveTaskAsync(newTask);
+                LoadTasks();
+            });
             await Navigation.PushAsync(taskDetailPage);
         }
 
@@ -48,10 +62,88 @@ namespace secure_task_manager_app.Views
         {
             if (e.Item is Models.Task selectedTask)
             {
-                var taskDetailPage = new TaskDetailPage(selectedTask, LoadTasks);
+                var taskDetailPage = new TaskDetailPage(selectedTask, async () =>
+                {
+                    await _sqliteService.SaveTaskAsync(selectedTask);
+                    LoadTasks();
+                });
                 await Navigation.PushAsync(taskDetailPage);
             }
             ((ListView)sender).SelectedItem = null;
+        }
+
+        // Przechodzenie do strony logowania w celu synchronizacji zadań
+        private async void OnSyncClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new LoginPage());
+        }
+
+        // Synchronizacja zadań z serwerem (po udanym logowaniu)
+        private async Task SyncTasksWithServer()
+        {
+            try
+            {
+                // Pobierz zadania z serwera
+                var serverTasks = await _apiService.GetTasksAsync();
+                var localTasks = await _sqliteService.GetTasksAsync();
+
+                if (serverTasks == null)
+                {
+                    await DisplayAlert("Błąd", "Nie udało się pobrać zadań z serwera", "OK");
+                    return;
+                }
+
+                // Synchronizacja - Dodanie brakujących zadań z serwera do lokalnej bazy
+                foreach (var serverTask in serverTasks)
+                {
+                    var localTask = localTasks.Find(t => t.Id == serverTask.Id);
+                    if (localTask == null)
+                    {
+                        // Brak tego zadania lokalnie - dodaj do lokalnej bazy
+                        await _sqliteService.SaveTaskAsync(serverTask);
+                        Tasks.Add(serverTask);
+                    }
+                    else if (serverTask.LastSyncDate > localTask.LastSyncDate)
+                    {
+                        // Zadanie na serwerze jest nowsze - zaktualizuj lokalne zadanie
+                        localTask.Title = serverTask.Title;
+                        localTask.Description = serverTask.Description;
+                        localTask.DueDate = serverTask.DueDate;
+                        localTask.Completed = serverTask.Completed;
+                        localTask.LastSyncDate = serverTask.LastSyncDate;
+                        await _sqliteService.SaveTaskAsync(localTask);
+                    }
+                }
+
+                // Synchronizacja - Dodanie lokalnych zadań na serwer
+                foreach (var localTask in localTasks)
+                {
+                    if (localTask.LastSyncDate == default)
+                    {
+                        // Zadanie lokalne nie było jeszcze zsynchronizowane - dodaj na serwer
+                        await _apiService.AddTaskAsync(localTask);
+                        localTask.LastSyncDate = DateTime.UtcNow;
+                        await _sqliteService.SaveTaskAsync(localTask);
+                    }
+                    else
+                    {
+                        var serverTask = serverTasks.Find(t => t.Id == localTask.Id);
+                        if (serverTask != null && localTask.LastSyncDate > serverTask.LastSyncDate)
+                        {
+                            // Zadanie lokalne jest nowsze niż na serwerze - zaktualizuj na serwerze
+                            await _apiService.UpdateTaskAsync(localTask);
+                            localTask.LastSyncDate = DateTime.UtcNow;
+                            await _sqliteService.SaveTaskAsync(localTask);
+                        }
+                    }
+                }
+
+                await DisplayAlert("Sukces", "Synchronizacja zadań zakończona pomyślnie", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Błąd", $"Wystąpił błąd podczas synchronizacji: {ex.Message}", "OK");
+            }
         }
     }
 }

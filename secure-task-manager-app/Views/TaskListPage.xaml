@@ -11,29 +11,29 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="10" VerticalOptions="Center">
-                                
-                                <!-- Task status icon -->
+
+                                <!-- Ikona statusu zadania -->
                                 <Image WidthRequest="20" HeightRequest="20">
                                     <Image.Style>
                                         <Style TargetType="Image">
-                                            <Setter Property="Source" Value="cross.png" /> <!-- Default X icon -->
+                                            <Setter Property="Source" Value="cross.png" /> <!-- Domyślny X -->
                                             <Style.Triggers>
                                                 <DataTrigger TargetType="Image" Binding="{Binding Completed}" Value="True">
-                                                    <Setter Property="Source" Value="checkmark.png" /> <!-- Checkmark icon when task completed -->
+                                                    <Setter Property="Source" Value="checkmark.png" /> <!-- Checkmark kiedy zadanie ukończone -->
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Image.Style>
                                 </Image>
 
-                                <!-- Title of task -->
+                                <!-- Tytuł zadania -->
                                 <Label Text="{Binding Title}" 
                                        VerticalOptions="Center" 
                                        FontSize="Medium" 
                                        FontAttributes="Bold"
                                        Margin="10,0,0,0" />
 
-                                <!-- Date of completion of the task -->
+                                <!-- Data ukończenia zadania -->
                                 <Label Text="{Binding DueDate, StringFormat='{0:yyyy-MM-dd}'}" 
                                        VerticalOptions="Center" 
                                        FontSize="Small" 
@@ -43,11 +43,19 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
+
+            <!-- Przycisk dodawania nowego zadania -->
             <Button Text="Add Task" 
                     Clicked="OnAddTaskClicked" 
                     HorizontalOptions="Center" 
                     VerticalOptions="End" />
+
+            <!-- Przycisk synchronizacji z serwerem -->
+            <Button Text="Sync with Server" 
+                    Clicked="OnSyncClicked" 
+                    HorizontalOptions="Center" 
+                    VerticalOptions="End" 
+                    Margin="10, 0" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

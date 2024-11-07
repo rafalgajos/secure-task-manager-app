@@ -117,7 +117,17 @@ namespace secure_task_manager_app.Services
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _httpClient.SendAsync(request);
-            return response.IsSuccessStatusCode;
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Zaktualizuj Id w lokalnym zadaniu po pomyślnym dodaniu
+                var content = await response.Content.ReadAsStringAsync();
+                var addedTask = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Task>(content);
+                task.Id = addedTask.Id;
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> UpdateTaskAsync(Models.Task task)

@@ -72,6 +72,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.10" />
 		<PackageReference Include="SkiaSharp" Version="2.88.8" />
 		<PackageReference Include="Svg.Skia" Version="2.0.0.2" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 	</ItemGroup>
 
 	<ItemGroup>

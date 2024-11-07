@@ -4,6 +4,6 @@
        xmlns:local="clr-namespace:secure_task_manager_app.Views"
        x:Class="secure_task_manager_app.AppShell">
 
-    <ShellContent Title="Login" ContentTemplate="{DataTemplate local:LoginPage}" />
+    <!-- Ustaw TaskListPage jako główną stronę -->
     <ShellContent Title="Tasks" ContentTemplate="{DataTemplate local:TaskListPage}" />
 </Shell>

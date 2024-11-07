@@ -13,15 +13,15 @@ namespace secure_task_manager_app
         {
             InitializeComponent();
 
-            // Asynchroniczne wczytanie URL-a z pliku ngrok_url.txt
+            // Wczytanie adresu API
             Task.Run(async () =>
             {
                 ApiBaseUrl = await LoadNgrokUrl();
                 Console.WriteLine($"Loaded ApiBaseUrl: {ApiBaseUrl}");
             }).Wait();
 
-            // Ustawienie strony początkowej
-            MainPage = new NavigationPage(new Views.LoginPage());
+            // Ustawienie strony początkowej na TaskListPage
+            MainPage = new NavigationPage(new Views.TaskListPage());
         }
 
         private async Task<string> LoadNgrokUrl()

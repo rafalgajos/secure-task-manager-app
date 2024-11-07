@@ -1,8 +1,11 @@
-﻿using System;
+﻿using SQLite;
+using System;
+
 namespace secure_task_manager_app.Models
 {
     public class Task
     {
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -11,4 +14,3 @@ namespace secure_task_manager_app.Models
         public DateTime LastSyncDate { get; set; }
     }
 }
-

@@ -6,16 +6,15 @@ namespace secure_task_manager_app.Views
 {
     public partial class TaskDetailPage : ContentPage
     {
-        private readonly ApiService _apiService;
+        private readonly SQLiteService _sqliteService;
         private readonly Action _refreshTaskListAction;
-
         public secure_task_manager_app.Models.Task Task { get; set; }
         public bool IsEditMode => Task.Id != 0;
 
         public TaskDetailPage(Models.Task task, Action refreshTaskListAction)
         {
             InitializeComponent();
-            _apiService = new ApiService();
+            _sqliteService = new SQLiteService(); // Zamiast używania using, używamy obiektu bezpośrednio.
             Task = task;
             _refreshTaskListAction = refreshTaskListAction;
             BindingContext = this;
@@ -23,18 +22,7 @@ namespace secure_task_manager_app.Views
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            if (IsEditMode)
-            {
-                await _apiService.UpdateTaskAsync(Task);
-            }
-            else
-            {
-                await _apiService.AddTaskAsync(Task);
-            }
-
-            // Wywołanie metody odświeżającej listę zadań
             _refreshTaskListAction?.Invoke();
-
             await Navigation.PopAsync();
         }
 
@@ -42,12 +30,10 @@ namespace secure_task_manager_app.Views
         {
             if (IsEditMode)
             {
-                await _apiService.DeleteTaskAsync(Task.Id);
+                await _sqliteService.DeleteTaskAsync(Task);
             }
 
-            // Odświeżenie listy po usunięciu zadania
             _refreshTaskListAction?.Invoke();
-
             await Navigation.PopAsync();
         }
     }
