@@ -79,29 +79,49 @@ namespace secure_task_manager_app.Views
                 var localTasks = await _sqliteService.GetTasksAsync();
                 var localTaskDict = localTasks.ToDictionary(task => task.Id);
 
+                // Synchronizacja - Dodanie lub aktualizacja zadań z serwera do lokalnej bazy
                 foreach (var serverTask in serverTasks)
                 {
                     if (localTaskDict.TryGetValue(serverTask.Id, out var localTask))
                     {
+                        // Zadanie istnieje lokalnie, sprawdzamy, czy wymaga aktualizacji
                         if (serverTask.LastSyncDate > localTask.LastSyncDate)
                         {
                             localTask.Title = serverTask.Title;
                             localTask.Description = serverTask.Description;
                             localTask.DueDate = serverTask.DueDate;
                             localTask.Completed = serverTask.Completed;
-                            localTask.LastSyncDate = DateTime.UtcNow;
+                            localTask.LastSyncDate = serverTask.LastSyncDate;
 
                             await _sqliteService.SaveTaskAsync(localTask);
+
+                            // Aktualizujemy również na liście widocznej w interfejsie
+                            var taskInList = Tasks.FirstOrDefault(t => t.Id == localTask.Id);
+                            if (taskInList != null)
+                            {
+                                int index = Tasks.IndexOf(taskInList);
+                                Tasks[index] = localTask; // Aktualizujemy element na liście
+                            }
+                            else
+                            {
+                                Tasks.Add(localTask); // Dodajemy tylko, jeśli jeszcze go nie ma
+                            }
                         }
                     }
                     else
                     {
+                        // Nowe zadanie z serwera - dodajemy do bazy lokalnej
                         serverTask.LastSyncDate = DateTime.UtcNow;
                         await _sqliteService.SaveTaskAsync(serverTask);
-                        Tasks.Add(serverTask);
+
+                        if (!Tasks.Any(t => t.Id == serverTask.Id))
+                        {
+                            Tasks.Add(serverTask); // Dodajemy zadanie do listy, tylko jeśli jeszcze go nie ma
+                        }
                     }
                 }
 
+                // Synchronizacja lokalnych zadań do serwera
                 foreach (var localTask in localTasks)
                 {
                     if (localTask.LastSyncDate == default)
