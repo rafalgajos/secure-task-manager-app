@@ -25,15 +25,26 @@ namespace secure_task_manager_app.Services
 
         public async Task<int> SaveTaskAsync(Models.Task task)
         {
-            if (task.Id != 0)
+            try
             {
-                return await _database.UpdateAsync(task);
+                if (task.Id != 0)
+                {
+                    Console.WriteLine($"Updating task with Id: {task.Id}");
+                    return await _database.UpdateAsync(task);
+                }
+                else
+                {
+                    Console.WriteLine($"Inserting new task with title: {task.Title}");
+                    return await _database.InsertAsync(task);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return await _database.InsertAsync(task);
+                Console.WriteLine($"Error saving task: {ex.Message}");
+                return 0; // oznacza, że zapis się nie udał
             }
         }
+
 
         public async Task<int> DeleteTaskAsync(Models.Task task)
         {

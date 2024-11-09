@@ -71,7 +71,7 @@ namespace secure_task_manager_app.Services
         {
             try
             {
-                var token = await GetJwtToken(); // Odczyt tokenu z zaszyfrowanego pliku
+                var token = await GetJwtToken();
 
                 if (string.IsNullOrEmpty(token))
                 {
@@ -86,7 +86,9 @@ namespace secure_task_manager_app.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<List<Models.Task>>();
+                    var tasks = await response.Content.ReadFromJsonAsync<List<Models.Task>>();
+                    Console.WriteLine($"Fetched {tasks?.Count} tasks from server.");
+                    return tasks;
                 }
                 else
                 {
