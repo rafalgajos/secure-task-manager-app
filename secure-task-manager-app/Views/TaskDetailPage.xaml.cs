@@ -8,16 +8,16 @@ namespace secure_task_manager_app.Views
     public partial class TaskDetailPage : ContentPage
     {
         private readonly SQLiteService _sqliteService;
-        private readonly ObservableCollection<Models.Task> _tasks; // Dodaj referencję do kolekcji zadań
+        private readonly ObservableCollection<Models.Task> _tasks; // Kolekcja zadań
         public secure_task_manager_app.Models.Task Task { get; set; }
         public bool IsEditMode => Task.Id != 0;
 
         public TaskDetailPage(Models.Task task, ObservableCollection<Models.Task> tasks)
         {
             InitializeComponent();
-            _sqliteService = new SQLiteService(); // Inicjalizacja SQLiteService
+            _sqliteService = new SQLiteService(App.DatabasePassword); // Przekazanie hasła do konstruktora
             Task = task;
-            _tasks = tasks; // Przypisz kolekcję zadań
+            _tasks = tasks;
             BindingContext = this;
         }
 
@@ -25,24 +25,22 @@ namespace secure_task_manager_app.Views
         {
             try
             {
-                // Zapisz zadanie do lokalnej bazy danych
                 await _sqliteService.SaveTaskAsync(Task);
 
-                // Znajdź zadanie w liście zadań i zaktualizuj je
                 if (_tasks != null)
                 {
                     var existingTaskIndex = _tasks.IndexOf(Task);
                     if (existingTaskIndex >= 0)
                     {
-                        _tasks[existingTaskIndex] = Task; // Zaktualizuj istniejące zadanie w kolekcji
+                        _tasks[existingTaskIndex] = Task;
                     }
                     else
                     {
-                        _tasks.Add(Task); // Dodaj zadanie, jeśli go jeszcze nie ma w kolekcji
+                        _tasks.Add(Task);
                     }
                 }
 
-                await Navigation.PopAsync(); // Powrót do poprzedniej strony
+                await Navigation.PopAsync();
             }
             catch (Exception ex)
             {
@@ -57,11 +55,11 @@ namespace secure_task_manager_app.Views
                 await _sqliteService.DeleteTaskAsync(Task);
                 if (_tasks != null && _tasks.Contains(Task))
                 {
-                    _tasks.Remove(Task); // Usuń zadanie z kolekcji
+                    _tasks.Remove(Task);
                 }
             }
 
-            await Navigation.PopAsync(); // Powrót do poprzedniej strony
+            await Navigation.PopAsync();
         }
     }
 }

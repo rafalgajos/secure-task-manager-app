@@ -11,10 +11,12 @@ namespace secure_task_manager_app.Services
     {
         private readonly SQLiteAsyncConnection _database;
 
-        public SQLiteService()
+        public SQLiteService(string password)
         {
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tasks.db");
-            _database = new SQLiteAsyncConnection(dbPath);
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tasks_secure.db");
+
+            var options = new SQLiteConnectionString(dbPath, true, key: password); // Szyfrowanie bazy danych
+            _database = new SQLiteAsyncConnection(options);
             _database.CreateTableAsync<Models.Task>().Wait();
         }
 
@@ -29,22 +31,19 @@ namespace secure_task_manager_app.Services
             {
                 if (task.Id != 0)
                 {
-                    Console.WriteLine($"Updating task with Id: {task.Id}");
                     return await _database.UpdateAsync(task);
                 }
                 else
                 {
-                    Console.WriteLine($"Inserting new task with title: {task.Title}");
                     return await _database.InsertAsync(task);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error saving task: {ex.Message}");
-                return 0; // oznacza, że zapis się nie udał
+                return 0;
             }
         }
-
 
         public async Task<int> DeleteTaskAsync(Models.Task task)
         {
