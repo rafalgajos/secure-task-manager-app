@@ -44,9 +44,9 @@ def get_tasks(current_user):
         "id": task.id,
         "title": task.title,
         "description": task.description,
-        "due_date": task.due_date,
+        "due_date": task.due_date.isoformat() if task.due_date else None,
         "completed": task.completed,
-        "last_sync_date": task.last_sync_date
+        "last_sync_date": task.last_sync_date.isoformat()
     } for task in tasks])
 
 

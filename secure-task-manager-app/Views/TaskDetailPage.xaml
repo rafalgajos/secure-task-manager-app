@@ -9,7 +9,7 @@
 
             <!-- End date label and DatePicker control -->
             <Label Text="Due Date" FontSize="Medium" VerticalOptions="Center" Margin="0,10,0,0"/>
-            <DatePicker Date="{Binding Task.DueDate}" />
+            <DatePicker Date="{Binding Task.DueDate, Converter={StaticResource NullableDateConverter}}" />
 
             <!-- Section with label and switch for completion status -->
             <StackLayout Orientation="Horizontal" VerticalOptions="Center" Margin="0,10,0,0">

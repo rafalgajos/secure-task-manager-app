@@ -84,19 +84,30 @@ namespace secure_task_manager_app.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var tasks = await response.Content.ReadFromJsonAsync<List<Models.Task>>();
-                    if (tasks != null)
+                    // Manually parse JSON response to handle nullable DateTime values
+                    var tasksJson = await response.Content.ReadAsStringAsync();
+                    var taskDictionaries = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(tasksJson);
+
+                    var tasks = new List<Models.Task>();
+
+                    foreach (var taskDict in taskDictionaries)
                     {
-                        foreach (var task in tasks)
+                        var task = new Models.Task
                         {
-                            // Ustaw na null, jeśli serwer nie dostarczył prawidłowej daty
-                            if (task.DueDate == DateTime.MinValue)
-                            {
-                                task.DueDate = null;
-                            }
-                        }
+                            Id = Convert.ToInt32(taskDict["id"]),
+                            Title = taskDict["title"]?.ToString(),
+                            Description = taskDict["description"]?.ToString(),
+                            DueDate = taskDict["due_date"] != null ? DateTime.Parse(taskDict["due_date"].ToString()) : (DateTime?)null,
+                            Completed = Convert.ToBoolean(taskDict["completed"]),
+                            LastSyncDate = DateTime.Parse(taskDict["last_sync_date"].ToString())
+                        };
+
+                        // Debug log to confirm due dates
+                        Console.WriteLine($"Task ID: {task.Id}, DueDate: {task.DueDate}");
+                        tasks.Add(task);
                     }
-                    Console.WriteLine($"Fetched {tasks?.Count} tasks from server.");
+
+                    Console.WriteLine($"Fetched {tasks.Count} tasks from server.");
                     return tasks;
                 }
                 else
@@ -110,6 +121,8 @@ namespace secure_task_manager_app.Services
             }
             return null;
         }
+
+
 
         public async Task<bool> AddTaskAsync(Models.Task task)
         {

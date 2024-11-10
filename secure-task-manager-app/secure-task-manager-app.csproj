@@ -90,6 +90,7 @@
 		<None Remove="Platforms\Android\Resources\mipmap-xxhdpi\" />
 		<None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\appicon.png" />
 		<None Remove="Platforms\Android\Resources\mipmap-xxxhdpi\" />
+		<None Remove="Converters\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -101,6 +102,7 @@
 		<Folder Include="Platforms\Android\Resources\mipmap-xhdpi\" />
 		<Folder Include="Platforms\Android\Resources\mipmap-xxhdpi\" />
 		<Folder Include="Platforms\Android\Resources\mipmap-xxxhdpi\" />
+		<Folder Include="Converters\" />
 	</ItemGroup>
 
 	<ItemGroup>
