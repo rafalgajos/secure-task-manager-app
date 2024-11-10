@@ -27,6 +27,11 @@ namespace secure_task_manager_app.Views
         {
             try
             {
+                if (Task.DueDate == null)
+                {
+                    Task.DueDate = DateTime.MinValue; // lub inną domyślną wartość
+                }
+
                 await _sqliteService.SaveTaskAsync(Task);
 
                 if (_tasks != null)

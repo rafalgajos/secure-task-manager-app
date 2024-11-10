@@ -54,16 +54,17 @@ def get_tasks(current_user):
 @token_required
 def add_task(current_user):
     data = request.json
+    due_date = datetime.fromisoformat(data.get('due_date')) if data.get('due_date') else None
     new_task = Task(
         title=data.get('title'),
         description=data.get('description'),
-        due_date=datetime.fromisoformat(data.get('due_date')) if data.get('due_date') else None,
+        due_date=due_date,
         completed=data.get('completed', False),
         user_id=current_user.id
     )
     db.session.add(new_task)
     db.session.commit()
-    return jsonify({"message": "Task created successfully"}), 201
+    return jsonify({"message": "Task created successfully", "id": new_task.id}), 201
 
 
 @tasks_api.route('/tasks/<int:id>', methods=['PUT'])
@@ -78,6 +79,7 @@ def update_task(current_user, id):
     task.last_sync_date = datetime.utcnow()
     db.session.commit()
     return jsonify({"message": "Task updated successfully"})
+
 
 
 @tasks_api.route('/tasks/<int:id>', methods=['DELETE'])

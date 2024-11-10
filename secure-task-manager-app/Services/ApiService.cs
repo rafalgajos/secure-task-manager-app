@@ -112,9 +112,18 @@ namespace secure_task_manager_app.Services
                 return false;
             }
 
+            // Convert DueDate to ISO 8601 format if not null
+            var taskData = new
+            {
+                title = task.Title,
+                description = task.Description,
+                due_date = task.DueDate?.ToString("o"), // ISO 8601 format
+                completed = task.Completed
+            };
+
             var request = new HttpRequestMessage(HttpMethod.Post, "/tasks")
             {
-                Content = JsonContent.Create(task)
+                Content = JsonContent.Create(taskData)
             };
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -122,7 +131,6 @@ namespace secure_task_manager_app.Services
 
             if (response.IsSuccessStatusCode)
             {
-                // Zaktualizuj Id w lokalnym zadaniu po pomyślnym dodaniu
                 var content = await response.Content.ReadAsStringAsync();
                 var addedTask = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Task>(content);
                 task.Id = addedTask.Id;
@@ -142,9 +150,18 @@ namespace secure_task_manager_app.Services
                 return false;
             }
 
+            // Convert DueDate to ISO 8601 format if not null
+            var taskData = new
+            {
+                title = task.Title,
+                description = task.Description,
+                due_date = task.DueDate?.ToString("o"), // ISO 8601 format
+                completed = task.Completed
+            };
+
             var request = new HttpRequestMessage(HttpMethod.Put, $"/tasks/{task.Id}")
             {
-                Content = JsonContent.Create(task)
+                Content = JsonContent.Create(taskData)
             };
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
