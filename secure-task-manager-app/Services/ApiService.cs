@@ -72,7 +72,6 @@ namespace secure_task_manager_app.Services
             try
             {
                 var token = await GetJwtToken();
-
                 if (string.IsNullOrEmpty(token))
                 {
                     Console.WriteLine("Token missing or expired, re-login required.");
@@ -81,12 +80,22 @@ namespace secure_task_manager_app.Services
 
                 var request = new HttpRequestMessage(HttpMethod.Get, "/tasks");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
                 var response = await _httpClient.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var tasks = await response.Content.ReadFromJsonAsync<List<Models.Task>>();
+                    if (tasks != null)
+                    {
+                        foreach (var task in tasks)
+                        {
+                            // Ustaw na null, jeśli serwer nie dostarczył prawidłowej daty
+                            if (task.DueDate == DateTime.MinValue)
+                            {
+                                task.DueDate = null;
+                            }
+                        }
+                    }
                     Console.WriteLine($"Fetched {tasks?.Count} tasks from server.");
                     return tasks;
                 }

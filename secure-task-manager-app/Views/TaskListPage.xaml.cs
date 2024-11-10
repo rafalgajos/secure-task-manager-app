@@ -89,7 +89,7 @@ namespace secure_task_manager_app.Views
                         {
                             localTask.Title = serverTask.Title;
                             localTask.Description = serverTask.Description;
-                            localTask.DueDate = serverTask.DueDate;
+                            localTask.DueDate = serverTask.DueDate ?? DateTime.MinValue;
                             localTask.Completed = serverTask.Completed;
                             localTask.LastSyncDate = serverTask.LastSyncDate;
 

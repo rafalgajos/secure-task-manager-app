@@ -34,10 +34,10 @@
                                        Margin="10,0,0,0" />
 
                                 <!-- Data ukończenia zadania -->
-                                <Label Text="{Binding DueDate, StringFormat='{0:yyyy-MM-dd}'}" 
-                                       VerticalOptions="Center" 
-                                       FontSize="Small" 
-                                       HorizontalOptions="EndAndExpand" />
+                                <Label Text="{Binding DueDate, StringFormat='{0:yyyy-MM-dd}', TargetNullValue='', FallbackValue=''}" 
+                                        VerticalOptions="Center" 
+                                        FontSize="Small" 
+                                        HorizontalOptions="EndAndExpand" />
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
