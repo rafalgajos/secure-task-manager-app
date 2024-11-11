@@ -105,16 +105,14 @@ namespace secure_task_manager_app.Views
         {
             if (IsEditMode)
             {
-                // Pytamy użytkownika, czy usunąć zadanie również z serwera
                 bool deleteFromServer = await DisplayAlert("Potwierdzenie", "Czy chcesz również usunąć to zadanie z serwera?", "Tak", "Nie");
 
                 if (deleteFromServer)
                 {
-                    // Usuń zadanie z serwera
                     bool result = await _apiService.DeleteTaskAsync(Task.Id);
                     if (!result)
                     {
-                        await DisplayAlert("Błąd", "Nie udało się usunąć zadania z serwera.", "OK");
+                        await DisplayAlert("Błąd", "Nie udało się usunąć zadania z serwera. Spróbuj zsynchronizować zadania i ponownie spróbować usunąć.", "OK");
                         return;
                     }
                 }
@@ -129,9 +127,7 @@ namespace secure_task_manager_app.Views
                 }
             }
 
-            // Powrót do poprzedniej strony po usunięciu zadania
             await Navigation.PopAsync();
         }
-
     }
 }

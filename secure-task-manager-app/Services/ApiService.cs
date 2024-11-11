@@ -219,7 +219,7 @@ namespace secure_task_manager_app.Services
 
             if (string.IsNullOrEmpty(token))
             {
-                Console.WriteLine("Token missing or expired, re-login required.");
+                Console.WriteLine("Error: Token missing or corrupted. Please try synchronizing tasks.");
                 return false;
             }
 
@@ -229,7 +229,6 @@ namespace secure_task_manager_app.Services
             var response = await _httpClient.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
-
 
         public void Logout()
         {

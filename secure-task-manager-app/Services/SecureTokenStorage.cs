@@ -52,18 +52,27 @@ namespace secure_task_manager_app.Services
 
             var encryptedToken = await File.ReadAllBytesAsync(FilePath);
 
-            using (var aes = Aes.Create())
+            try
             {
-                aes.Key = Key;
-                aes.IV = IV;
-
-                using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
-                using (var ms = new MemoryStream(encryptedToken))
-                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                using (var sr = new StreamReader(cs))
+                using (var aes = Aes.Create())
                 {
-                    return await sr.ReadToEndAsync();
+                    aes.Key = Key;
+                    aes.IV = IV;
+
+                    using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                    using (var ms = new MemoryStream(encryptedToken))
+                    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    using (var sr = new StreamReader(cs))
+                    {
+                        return await sr.ReadToEndAsync();
+                    }
                 }
+            }
+            catch (CryptographicException)
+            {
+                // Zwróć null, jeśli token jest uszkodzony lub niepoprawnie odszyfrowany
+                Console.WriteLine("Error: Invalid padding or corrupted token. Unable to retrieve token.");
+                return null;
             }
         }
 
