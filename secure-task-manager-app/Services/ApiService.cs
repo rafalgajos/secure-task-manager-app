@@ -44,8 +44,24 @@ namespace secure_task_manager_app.Services
 
         public async Task<bool> RegisterAsync(User user)
         {
-            var response = await _httpClient.PostAsJsonAsync("/register", user);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("/register", user);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Registration failed: {errorContent}");
+                    return false;
+                }
+
+                Console.WriteLine("User registered successfully.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during registration: {ex.Message}");
+                return false;
+            }
         }
 
         public async Task<bool> LoginAsync(User user)

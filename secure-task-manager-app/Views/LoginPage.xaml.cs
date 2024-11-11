@@ -1,6 +1,7 @@
 ﻿using secure_task_manager_app.Models;
 using secure_task_manager_app.Services;
 using System;
+using Microsoft.Maui.Controls;
 
 namespace secure_task_manager_app.Views
 {
@@ -40,6 +41,12 @@ namespace secure_task_manager_app.Views
             {
                 await DisplayAlert("Błąd", "Logowanie nieudane. Nie udało się zsynchronizować zadań.", "OK");
             }
+        }
+
+        // Obsługa przekierowania do strony rejestracji
+        private async void OnRegisterClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new RegisterPage()); // Przekierowanie do strony rejestracji
         }
     }
 }

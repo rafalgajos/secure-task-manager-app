@@ -11,7 +11,7 @@ SECRET_KEY = Config.SECRET_KEY
 # Konfiguracja logowania
 logging.basicConfig(level=logging.DEBUG)
 
-@auth.route('/register', methods=['POST'])
+@auth.route('/auth/register', methods=['POST'])
 def register():
     logging.info("Received registration request")
     try:
