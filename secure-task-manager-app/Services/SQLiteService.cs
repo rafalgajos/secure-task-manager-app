@@ -49,5 +49,18 @@ namespace secure_task_manager_app.Services
         {
             return await _database.DeleteAsync(task);
         }
+
+        public async System.Threading.Tasks.Task ClearAllTasksAsync()
+        {
+            try
+            {
+                await _database.DeleteAllAsync<Models.Task>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error clearing tasks: {ex.Message}");
+            }
+        }
+
     }
 }

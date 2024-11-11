@@ -230,6 +230,7 @@ namespace secure_task_manager_app.Services
             return response.IsSuccessStatusCode;
         }
 
+
         public void Logout()
         {
             ClearJwtToken(); // Czyszczenie tokenu przy wylogowaniu

@@ -105,29 +105,33 @@ namespace secure_task_manager_app.Views
         {
             if (IsEditMode)
             {
+                // Pytamy użytkownika, czy usunąć zadanie również z serwera
                 bool deleteFromServer = await DisplayAlert("Potwierdzenie", "Czy chcesz również usunąć to zadanie z serwera?", "Tak", "Nie");
 
-                // Usuń zadanie lokalnie
-                await _sqliteService.DeleteTaskAsync(Task);
-
-                // Usuń zadanie z listy interfejsu, jeśli jest tam obecne
-                if (_tasks != null && _tasks.Contains(Task))
-                {
-                    _tasks.Remove(Task);
-                }
-
-                // Jeśli użytkownik chce usunąć zadanie z serwera, wyślij żądanie DELETE
                 if (deleteFromServer)
                 {
+                    // Usuń zadanie z serwera
                     bool result = await _apiService.DeleteTaskAsync(Task.Id);
                     if (!result)
                     {
                         await DisplayAlert("Błąd", "Nie udało się usunąć zadania z serwera.", "OK");
+                        return;
                     }
+                }
+
+                // Usuń zadanie z lokalnej bazy danych
+                await _sqliteService.DeleteTaskAsync(Task);
+
+                // Usuń zadanie z listy interfejsu, jeśli tam istnieje
+                if (_tasks != null && _tasks.Contains(Task))
+                {
+                    _tasks.Remove(Task);
                 }
             }
 
+            // Powrót do poprzedniej strony po usunięciu zadania
             await Navigation.PopAsync();
         }
+
     }
 }
