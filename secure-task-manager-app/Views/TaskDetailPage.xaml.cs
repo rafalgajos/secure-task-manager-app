@@ -1,6 +1,7 @@
 ﻿using secure_task_manager_app.Models;
 using secure_task_manager_app.Services;
 using System.Collections.ObjectModel;
+using Microsoft.Maui.Devices.Sensors;
 using System;
 
 namespace secure_task_manager_app.Views
@@ -22,6 +23,51 @@ namespace secure_task_manager_app.Views
             _tasks = tasks;
             BindingContext = this;
         }
+
+        private async void OnGetLocationClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+
+                if (status != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Permission Denied", "Cannot access location", "OK");
+                    return;
+                }
+
+                var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+                var location = await Geolocation.GetLocationAsync(request);
+
+                if (location != null)
+                {
+                    Task.Location = $"{location.Latitude}, {location.Longitude}";
+                    OnPropertyChanged(nameof(Task.Location)); // Update the UI
+                }
+                else
+                {
+                    await DisplayAlert("Location Error", "Could not retrieve location", "OK");
+                }
+            }
+            catch (FeatureNotSupportedException fnsEx)
+            {
+                await DisplayAlert("Error", "Location not supported on this device", "OK");
+            }
+            catch (FeatureNotEnabledException fneEx)
+            {
+                await DisplayAlert("Error", "Location services are not enabled", "OK");
+            }
+            catch (PermissionException pEx)
+            {
+                await DisplayAlert("Error", "Permission to access location was denied", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to get location: {ex.Message}", "OK");
+            }
+        }
+
+
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {

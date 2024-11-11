@@ -14,7 +14,8 @@ class Task(db.Model):
     due_date = db.Column(db.DateTime, nullable=True)
     completed = db.Column(db.Boolean, default=False)
     last_sync_date = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Add a foreign key
+    location = db.Column(db.String(100), nullable=True)  # Dodane pole na lokalizację
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
 class User(db.Model):

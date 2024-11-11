@@ -139,8 +139,9 @@ namespace secure_task_manager_app.Services
             {
                 title = task.Title,
                 description = task.Description,
-                due_date = task.DueDate?.ToString("o"), // ISO 8601 format
-                completed = task.Completed
+                due_date = task.DueDate?.ToString("o"),
+                completed = task.Completed,
+                location = task.Location // Pass location data
             };
 
             var request = new HttpRequestMessage(HttpMethod.Post, "/tasks")

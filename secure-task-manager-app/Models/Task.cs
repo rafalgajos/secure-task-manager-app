@@ -12,5 +12,9 @@ namespace secure_task_manager_app.Models
         public DateTime? DueDate { get; set; } = null;
         public bool Completed { get; set; }
         public DateTime LastSyncDate { get; set; }
+
+        // New property for storing location
+        public string Location { get; set; } // JSON string with latitude and longitude
     }
+
 }
