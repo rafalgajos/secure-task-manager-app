@@ -63,13 +63,26 @@ def add_task(current_user):
         return jsonify({"error": "Title is required"}), 400
 
     try:
+        # Sprawdzamy, czy zadanie już istnieje
+        existing_task = Task.query.filter_by(
+            title=data['title'],
+            due_date=datetime.fromisoformat(data['due_date']) if data.get('due_date') else None,
+            completed=data.get('completed', False),
+            user_id=current_user.id
+        ).first()
+
+        if existing_task:
+            # Jeśli zadanie już istnieje, zwracamy informację, że nie dodajemy nowego
+            return jsonify({"message": "Task already exists"}), 200
+
+        # Dodaj nowe zadanie, jeśli go nie znaleziono
         due_date = datetime.fromisoformat(data.get('due_date')) if data.get('due_date') else None
         new_task = Task(
             title=data['title'],
             description=data.get('description'),
             due_date=due_date,
             completed=data.get('completed', False),
-            location=data.get('location'),  # Handle location field
+            location=data.get('location'),
             user_id=current_user.id
         )
         db.session.add(new_task)

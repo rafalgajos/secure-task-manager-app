@@ -138,8 +138,6 @@ namespace secure_task_manager_app.Services
             return null;
         }
 
-
-
         public async Task<bool> AddTaskAsync(Models.Task task)
         {
             var token = await GetJwtToken();
@@ -150,14 +148,13 @@ namespace secure_task_manager_app.Services
                 return false;
             }
 
-            // Convert DueDate to ISO 8601 format if not null
             var taskData = new
             {
                 title = task.Title,
                 description = task.Description,
                 due_date = task.DueDate?.ToString("o"),
                 completed = task.Completed,
-                location = task.Location // Pass location data
+                location = task.Location
             };
 
             var request = new HttpRequestMessage(HttpMethod.Post, "/tasks")
@@ -171,9 +168,17 @@ namespace secure_task_manager_app.Services
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var addedTask = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Task>(content);
-                task.Id = addedTask.Id;
-                return true;
+                if (content.Contains("Task already exists"))
+                {
+                    Console.WriteLine("Task already exists on the server.");
+                    return true; // Uznamy, że zadanie jest już zsynchronizowane
+                }
+                else
+                {
+                    var addedTask = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Task>(content);
+                    task.Id = addedTask.Id;
+                    return true;
+                }
             }
 
             return false;

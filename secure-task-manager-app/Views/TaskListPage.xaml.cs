@@ -69,24 +69,26 @@ namespace secure_task_manager_app.Views
         {
             try
             {
+                // Pobieramy zadania z serwera
                 var serverTasks = await _apiService.GetTasksAsync();
                 if (serverTasks == null)
                 {
-                    await DisplayAlert("Błąd", "Nie udało się pobrać zadań z serwera", "OK");
+                    await DisplayAlert("Error", "Failed to fetch tasks from server.", "OK");
                     return;
                 }
 
+                // Pobieramy zadania lokalne
                 var localTasks = await _sqliteService.GetTasksAsync();
                 var localTaskDict = localTasks.ToDictionary(task => task.Id);
 
-                // Synchronizacja - Dodanie lub aktualizacja zadań z serwera do lokalnej bazy
+                // Synchronizacja zadań z serwera do lokalnej bazy danych
                 foreach (var serverTask in serverTasks)
                 {
                     if (localTaskDict.TryGetValue(serverTask.Id, out var localTask))
                     {
-                        // Zadanie istnieje lokalnie, sprawdzamy, czy wymaga aktualizacji
                         if (serverTask.LastSyncDate > localTask.LastSyncDate)
                         {
+                            // Aktualizujemy lokalne zadanie
                             localTask.Title = serverTask.Title;
                             localTask.Description = serverTask.Description;
                             localTask.DueDate = serverTask.DueDate ?? DateTime.MinValue;
@@ -94,30 +96,12 @@ namespace secure_task_manager_app.Views
                             localTask.LastSyncDate = serverTask.LastSyncDate;
 
                             await _sqliteService.SaveTaskAsync(localTask);
-
-                            // Aktualizujemy również na liście widocznej w interfejsie
-                            var taskInList = Tasks.FirstOrDefault(t => t.Id == localTask.Id);
-                            if (taskInList != null)
-                            {
-                                int index = Tasks.IndexOf(taskInList);
-                                Tasks[index] = localTask; // Aktualizujemy element na liście
-                            }
-                            else
-                            {
-                                Tasks.Add(localTask); // Dodajemy tylko, jeśli jeszcze go nie ma
-                            }
                         }
                     }
                     else
                     {
-                        // Nowe zadanie z serwera - dodajemy do bazy lokalnej
-                        serverTask.LastSyncDate = DateTime.UtcNow;
+                        // Dodajemy nowe zadanie z serwera do bazy lokalnej
                         await _sqliteService.SaveTaskAsync(serverTask);
-
-                        if (!Tasks.Any(t => t.Id == serverTask.Id))
-                        {
-                            Tasks.Add(serverTask); // Dodajemy zadanie do listy, tylko jeśli jeszcze go nie ma
-                        }
                     }
                 }
 
@@ -142,12 +126,21 @@ namespace secure_task_manager_app.Views
                     }
                 }
 
-                await DisplayAlert("Sukces", "Synchronizacja zadań zakończona pomyślnie", "OK");
+                // Resetowanie i ponowne budowanie listy zadań w interfejsie
+                Tasks.Clear();
+                var updatedTasks = await _sqliteService.GetTasksAsync();
+                foreach (var task in updatedTasks)
+                {
+                    Tasks.Add(task);
+                }
+
+                await DisplayAlert("Success", "Synchronization completed successfully.", "OK");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Błąd", $"Wystąpił błąd podczas synchronizacji: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"An error occurred during synchronization: {ex.Message}", "OK");
             }
         }
+
     }
 }
