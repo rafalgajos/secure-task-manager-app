@@ -18,7 +18,7 @@
         <Button Text="Zaloguj i Synchronizuj" Clicked="OnLoginClicked" />
 
         <!-- Dodane pole tekstowe i przycisk rejestracji -->
-        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,20,0,0">
+        <StackLayout Orientation="Vertical" HorizontalOptions="Center" Margin="0,20,0,0">
             <Label Text="Nie masz konta?" VerticalOptions="Center" />
             <Button Text="Stwórz konto" Clicked="OnRegisterClicked" />
         </StackLayout>
