@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import wraps
 import jwt
 from flask import Blueprint, request, jsonify
@@ -63,7 +63,7 @@ def add_task(current_user):
         return jsonify({"error": "Title is required"}), 400
 
     try:
-        # Sprawdzamy, czy zadanie już istnieje
+        # Check if the task already exists
         existing_task = Task.query.filter_by(
             title=data['title'],
             due_date=datetime.fromisoformat(data['due_date']) if data.get('due_date') else None,
@@ -72,10 +72,9 @@ def add_task(current_user):
         ).first()
 
         if existing_task:
-            # Jeśli zadanie już istnieje, zwracamy informację, że nie dodajemy nowego
             return jsonify({"message": "Task already exists"}), 200
 
-        # Dodaj nowe zadanie, jeśli go nie znaleziono
+        # Add new task if not found
         due_date = datetime.fromisoformat(data.get('due_date')) if data.get('due_date') else None
         new_task = Task(
             title=data['title'],
@@ -93,10 +92,10 @@ def add_task(current_user):
         return jsonify({"error": "Failed to create task"}), 500
 
 # Update an existing task
-@tasks_api.route('/tasks/<int:id>', methods=['PUT'])
+@tasks_api.route('/tasks/<int:task_id>', methods=['PUT'])
 @token_required
-def update_task(current_user, id):
-    task = Task.query.filter_by(id=id, user_id=current_user.id).first()
+def update_task(current_user, task_id):
+    task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
     if not task:
         return jsonify({"error": "Task not found"}), 404
 
@@ -107,7 +106,7 @@ def update_task(current_user, id):
         task.due_date = datetime.fromisoformat(data.get('due_date')) if data.get('due_date') else task.due_date
         task.completed = data.get('completed', task.completed)
         task.location = data.get('location', task.location)  # Update location if provided
-        task.last_sync_date = datetime.utcnow()
+        task.last_sync_date = datetime.now(timezone.utc)  # Use timezone-aware UTC datetime
         db.session.commit()
         return jsonify({"message": "Task updated successfully"})
     except Exception as e:
@@ -115,10 +114,10 @@ def update_task(current_user, id):
         return jsonify({"error": "Failed to update task"}), 500
 
 # Delete a task
-@tasks_api.route('/tasks/<int:id>', methods=['DELETE'])
+@tasks_api.route('/tasks/<int:task_id>', methods=['DELETE'])
 @token_required
-def delete_task(current_user, id):
-    task = Task.query.filter_by(id=id, user_id=current_user.id).first()
+def delete_task(current_user, task_id):
+    task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
     if not task:
         return jsonify({"error": "Task not found"}), 404
 

@@ -8,10 +8,10 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(BASE_DIR, "tasks.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Konfiguracja ciasteczek sesji
-    SESSION_COOKIE_SECURE = True  # Dostępne tylko przez HTTPS
-    SESSION_COOKIE_HTTPONLY = True  # Niedostępne przez JavaScript
-    SESSION_COOKIE_SAMESITE = 'Lax'  # Ciasteczka są dostępne tylko na tej samej witrynie
+    # Configure session cookies
+    SESSION_COOKIE_SECURE = True        # Only accessible via HTTPS
+    SESSION_COOKIE_HTTPONLY = True      # Not accessible via JavaScript
+    SESSION_COOKIE_SAMESITE = 'Lax'     # Cookies are only available on the same site
 
-    # Wymuś HTTPS
+    # Enforce HTTPS
     PREFERRED_URL_SCHEME = 'https'

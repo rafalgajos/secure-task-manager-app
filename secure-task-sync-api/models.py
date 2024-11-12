@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,8 +13,8 @@ class Task(db.Model):
     description = db.Column(db.String(200), nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)
     completed = db.Column(db.Boolean, default=False)
-    last_sync_date = db.Column(db.DateTime, default=datetime.utcnow)
-    location = db.Column(db.String(100), nullable=True)  # Dodane pole na lokalizację
+    last_sync_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    location = db.Column(db.String(100), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 

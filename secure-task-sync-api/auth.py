@@ -9,11 +9,11 @@ from limiter_config import limiter
 auth = Blueprint('auth', __name__)
 SECRET_KEY = Config.SECRET_KEY
 
-# Konfiguracja logowania
+# Login configuration
 logging.basicConfig(level=logging.DEBUG)
 
 @auth.route('/auth/register', methods=['POST'])
-@limiter.limit("5 per minute")  # Limit na 5 rejestracji na minutę
+@limiter.limit("5 per minute")
 def register():
     logging.info("Received registration request")
     try:
@@ -41,7 +41,7 @@ def register():
         return jsonify({"message": f"Registration failed", "error": str(e)}), 500
 
 @auth.route('/login', methods=['POST'])
-@limiter.limit("10 per minute")  # Limit na 10 prób logowania na minutę
+@limiter.limit("10 per minute")
 def login():
     try:
         data = request.json
@@ -51,7 +51,7 @@ def login():
         if user and user.check_password(data['password']):
             token = jwt.encode({
                 'user_id': user.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+                'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
             }, SECRET_KEY, algorithm="HS256")
 
             logging.info(f"User logged in successfully: {data['username']}")

@@ -1,11 +1,11 @@
-from flask import Flask, jsonify, render_template, redirect, url_for, request
+from flask import Flask, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
+
+from auth import auth
 from config import Config
+from limiter_config import limiter
 from models import db
 from tasks_api import tasks_api
-from auth import auth
-import os
-from limiter_config import limiter  # Import limiter z limiter_config
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -55,7 +55,7 @@ def set_security_headers(response):
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
-    response.headers['Server'] = 'SecureServer'  # Ukryj szczegóły wersji serwera
+    response.headers['Server'] = 'SecureServer'  # Hide server version details
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
         "script-src 'self'; "
