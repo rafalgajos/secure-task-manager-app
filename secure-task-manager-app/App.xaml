@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:secure_task_manager_app"
+             xmlns:converters="clr-namespace:secure_task_manager_app.Converters"
              x:Class="secure_task_manager_app.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,6 +10,7 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converters:DefaultDateVisibilityConverter x:Key="DefaultDateVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
