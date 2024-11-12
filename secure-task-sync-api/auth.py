@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from config import Config
 from models import db, User
-import jwt  # pip install PyJWT
+import jwt
 import datetime
 import logging
-from limiter_config import limiter  # Import limiter z limiter_config
+from limiter_config import limiter
 
 auth = Blueprint('auth', __name__)
 SECRET_KEY = Config.SECRET_KEY
@@ -24,7 +24,6 @@ def register():
             logging.error("Missing username or password in registration data")
             return jsonify({"message": "Missing username or password"}), 400
 
-        # Check if username already exists
         if User.query.filter_by(username=data['username']).first():
             logging.error("Username already exists")
             return jsonify({"message": "Username already exists"}), 400
@@ -41,20 +40,15 @@ def register():
         logging.error(f"Error during registration: {str(e)}")
         return jsonify({"message": f"Registration failed", "error": str(e)}), 500
 
-
 @auth.route('/login', methods=['POST'])
-# @limiter.limit("10 per minute")  # Limit na 10 prób logowania na minutę
+@limiter.limit("10 per minute")  # Limit na 10 prób logowania na minutę
 def login():
     try:
         data = request.json
         logging.debug(f"Received login data: {data}")
 
-        # Znajdź użytkownika na podstawie nazwy użytkownika
         user = User.query.filter_by(username=data['username']).first()
-
-        # Sprawdź poprawność hasła
         if user and user.check_password(data['password']):
-            # Generowanie tokena JWT z 'user_id' i czasem wygaśnięcia
             token = jwt.encode({
                 'user_id': user.id,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
@@ -63,7 +57,6 @@ def login():
             logging.info(f"User logged in successfully: {data['username']}")
             logging.debug(f"Generated JWT token: {token}")
 
-            # Zwróć token do klienta
             return jsonify({'token': token}), 200
 
         logging.warning("Invalid credentials provided")
