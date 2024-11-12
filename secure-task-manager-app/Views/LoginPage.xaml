@@ -3,6 +3,11 @@
              x:Class="secure_task_manager_app.Views.LoginPage"
              Title="Login">
     <StackLayout Padding="20" VerticalOptions="CenterAndExpand" Spacing="20">
+        
+        <!-- Logo SVG nad formularzem logowania -->
+        <Image Source="logo.svg"
+               HeightRequest="150"
+               HorizontalOptions="Center" />
 
         <Label Text="Podaj nazwę użytkownika" FontSize="Medium" />
         <Entry x:Name="UsernameEntry" Placeholder="Nazwa użytkownika" />
