@@ -62,6 +62,9 @@ def set_security_headers(response):
         "style-src 'self'; "
         "img-src 'self' data:;"
     )
+    # Remove Server header
+    if 'Server' in response.headers:
+        del response.headers['Server']
 
     return response
 
