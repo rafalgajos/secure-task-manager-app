@@ -4,6 +4,7 @@ from models import db, User
 import jwt  # pip install PyJWT
 import datetime
 import logging
+from limiter_config import limiter  # Import limiter z limiter_config
 
 auth = Blueprint('auth', __name__)
 SECRET_KEY = Config.SECRET_KEY
@@ -12,6 +13,7 @@ SECRET_KEY = Config.SECRET_KEY
 logging.basicConfig(level=logging.DEBUG)
 
 @auth.route('/auth/register', methods=['POST'])
+@limiter.limit("5 per minute")  # Limit na 5 rejestracji na minutę
 def register():
     logging.info("Received registration request")
     try:
@@ -41,6 +43,7 @@ def register():
 
 
 @auth.route('/login', methods=['POST'])
+# @limiter.limit("10 per minute")  # Limit na 10 prób logowania na minutę
 def login():
     try:
         data = request.json

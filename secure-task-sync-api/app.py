@@ -5,15 +5,21 @@ from models import db
 from tasks_api import tasks_api
 from auth import auth
 import os
+from limiter_config import limiter  # Import limiter z limiter_config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Initialize limiter with app (app initialization happens after limiter is imported)
+limiter.init_app(app)
+
 # Database initialization
 db.init_app(app)
 
-# CORS support
-CORS(app)
+# CORS support (restricted to specific domains for security)
+CORS(app, resources={
+    r"/*": {"origins": ["https://127.0.0.1:8443"]}
+})
 
 # Blueprint registration
 app.register_blueprint(tasks_api)
@@ -24,7 +30,7 @@ clickjacking_protection_enabled = True
 js_clickjacking_protection_enabled = True
 
 
-# Clickjacking protection headers and JavaScript
+# Clickjacking protection headers and security improvements
 @app.after_request
 def set_security_headers(response):
     global clickjacking_protection_enabled, js_clickjacking_protection_enabled
@@ -43,6 +49,13 @@ def set_security_headers(response):
             '<script>if (window.top !== window.self) { window.top.location = window.self.location; }</script></head>'
         )
         response.set_data(response_data)
+
+    # Additional security headers
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Server'] = 'SecureServer'
 
     return response
 
