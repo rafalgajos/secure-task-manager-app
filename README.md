@@ -11,6 +11,7 @@
 8. [Running the Application](#running-the-application)
 9. [Simulating a Clickjacking Attack](#simulating-a-clickjacking-attack)
 10. [Contributing](#contributing)
+11. [License](#license)
 
 ---
 
@@ -22,8 +23,8 @@ The **Secure Task Manager** is a mobile application with a secure backend, desig
 
 ## Gallery
 
-| ![Image 1](images/image1.png) | ![Image 2](images/image2.png) |
-|:-----------------------------:|:-----------------------------:|
+| <img src="images/image1.png" width="50%"> | <img src="images/image2.png" width="50%"> |
+|:-----------------------------------------:|:-----------------------------------------:|
 
 ---
 
@@ -137,8 +138,8 @@ secure-task-manager
 - **DELETE /tasks/<task_id>**: Delete a task
 
 ### Security Measures
-| ![Image 1](images/image0.png) |
-|:-----------------------------:|
+| <img src="images/image0.png" width="50%"> |
+|:-----------------------------------------:|
 
 - **JWT Authentication**: Tokens used for all API requests after login.
 - **Data Encryption**: AES encryption for local storage of sensitive data.
@@ -181,12 +182,12 @@ To simulate a clickjacking attack, follow these steps. This setup will temporari
 
 ---
 
-## Contributors <a name="contributors"></a>
+## Contributors
 
 - Natalia Brzezińska
 - Rafał Gajos
 
-## License <a name="license"></a>
+## License
 
 This project is proprietary software.
 © 2024 Natalia Brzezińska, Rafał Gajos
