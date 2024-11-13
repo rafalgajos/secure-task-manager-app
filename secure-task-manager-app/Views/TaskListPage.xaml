@@ -12,28 +12,28 @@
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="10" VerticalOptions="Center">
 
-                                <!-- Ikona statusu zadania -->
+                                <!-- Task status icon -->
                                 <Image WidthRequest="20" HeightRequest="20">
                                     <Image.Style>
                                         <Style TargetType="Image">
-                                            <Setter Property="Source" Value="cross.png" /> <!-- Domyślny X -->
+                                            <Setter Property="Source" Value="cross.png" /> <!-- Default X -->
                                             <Style.Triggers>
                                                 <DataTrigger TargetType="Image" Binding="{Binding Completed}" Value="True">
-                                                    <Setter Property="Source" Value="checkmark.png" /> <!-- Checkmark kiedy zadanie ukończone -->
+                                                    <Setter Property="Source" Value="checkmark.png" /> <!-- Checkmark when task completed -->
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Image.Style>
                                 </Image>
 
-                                <!-- Tytuł zadania -->
+                                <!-- Task title -->
                                 <Label Text="{Binding Title}" 
                                        VerticalOptions="Center" 
                                        FontSize="Medium" 
                                        FontAttributes="Bold"
                                        Margin="10,0,0,0" />
 
-                                <!-- Data ukończenia zadania -->
+                                <!-- Date of task completion -->
                                 <Label Text="{Binding DueDate, Converter={StaticResource DefaultDateVisibilityConverter}}"
                                        VerticalOptions="Center" 
                                        FontSize="Small" 

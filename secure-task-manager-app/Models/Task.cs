@@ -40,7 +40,7 @@ namespace secure_task_manager_app.Models
 
         public DateTime LastSyncDate { get; set; }
 
-        // Nowa właściwość dla przechowywania lokalizacji
+        // New property for storing location
         private string _location;
         public string Location
         {

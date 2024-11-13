@@ -50,7 +50,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- Usunięto osobny wpis dla ngrok_url.txt i uwzględniono cały katalog Raw -->
+		<!-- Removed separate entry for ngrok_url.txt and included the entire Raw directory -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 
 		<!-- App Icon -->

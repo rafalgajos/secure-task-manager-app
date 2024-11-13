@@ -67,15 +67,13 @@ namespace secure_task_manager_app.Views
             }
         }
 
-
-
         private async void OnSaveClicked(object sender, EventArgs e)
         {
             try
             {
                 if (Task.DueDate == null)
                 {
-                    Task.DueDate = DateTime.MinValue; // lub inną domyślną wartość
+                    Task.DueDate = DateTime.MinValue; // or another default value
                 }
 
                 await _sqliteService.SaveTaskAsync(Task);
@@ -97,7 +95,7 @@ namespace secure_task_manager_app.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Błąd", $"Wystąpił błąd podczas zapisu: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"An error occurred while saving: {ex.Message}", "OK");
             }
         }
 
@@ -105,22 +103,22 @@ namespace secure_task_manager_app.Views
         {
             if (IsEditMode)
             {
-                bool deleteFromServer = await DisplayAlert("Potwierdzenie", "Czy chcesz również usunąć to zadanie z serwera?", "Tak", "Nie");
+                bool deleteFromServer = await DisplayAlert("Confirmation", "Do you also want to delete this task from the server?", "Yes", "No");
 
                 if (deleteFromServer)
                 {
                     bool result = await _apiService.DeleteTaskAsync(Task.Id);
                     if (!result)
                     {
-                        await DisplayAlert("Błąd", "Nie udało się usunąć zadania z serwera. Spróbuj zsynchronizować zadania i ponownie spróbować usunąć.", "OK");
+                        await DisplayAlert("Error", "Failed to delete the task from the server. Try synchronizing tasks and attempt deletion again.", "OK");
                         return;
                     }
                 }
 
-                // Usuń zadanie z lokalnej bazy danych
+                // Remove the task from the local database
                 await _sqliteService.DeleteTaskAsync(Task);
 
-                // Usuń zadanie z listy interfejsu, jeśli tam istnieje
+                // Remove the task from the interface list, if it exists there
                 if (_tasks != null && _tasks.Contains(Task))
                 {
                     _tasks.Remove(Task);

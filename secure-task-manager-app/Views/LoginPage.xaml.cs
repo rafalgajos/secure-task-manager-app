@@ -22,7 +22,7 @@ namespace secure_task_manager_app.Views
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                await DisplayAlert("Błąd", "Podaj nazwę użytkownika i hasło", "OK");
+                await DisplayAlert("Error", "Please enter username and password", "OK");
                 return;
             }
 
@@ -34,19 +34,19 @@ namespace secure_task_manager_app.Views
 
             if (await _apiService.LoginAsync(user))
             {
-                await Navigation.PopAsync(); // Wróć do poprzedniej strony po udanym logowaniu
-                MessagingCenter.Send(this, "SyncTasks"); // Wyślij wiadomość do TaskListPage, aby zsynchronizować zadania
+                await Navigation.PopAsync(); // Return to previous page after successful login
+                MessagingCenter.Send(this, "SyncTasks"); // Send message to TaskListPage to synchronize tasks
             }
             else
             {
-                await DisplayAlert("Błąd", "Logowanie nieudane. Nie udało się zsynchronizować zadań.", "OK");
+                await DisplayAlert("Error", "Login failed. Could not synchronize tasks.", "OK");
             }
         }
 
-        // Obsługa przekierowania do strony rejestracji
+        // Support for redirection to the registration page
         private async void OnRegisterClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new RegisterPage()); // Przekierowanie do strony rejestracji
+            await Navigation.PushAsync(new RegisterPage()); // Redirect to the registration page
         }
     }
 }

@@ -17,7 +17,7 @@ namespace secure_task_manager_app.Services
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
 
-            // Ustawienie BaseAddress na sztywny adres URL
+            // Setting BaseAddress to a fixed URL
             _httpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri(App.ApiBaseUrl)
@@ -26,19 +26,19 @@ namespace secure_task_manager_app.Services
 
         private async System.Threading.Tasks.Task SetJwtToken(string jwtToken)
         {
-            // Zapisz token JWT w zaszyfrowanym pliku lokalnym
+            // Save the JWT token in an encrypted local file
             await SecureTokenStorage.SaveTokenAsync(jwtToken);
         }
 
         private async Task<string> GetJwtToken()
         {
-            // Odczytaj token JWT z zaszyfrowanego pliku lokalnego
+            // Read JWT token from encrypted local file
             return await SecureTokenStorage.GetTokenAsync();
         }
 
         private void ClearJwtToken()
         {
-            // Usuń token JWT z zaszyfrowanego pliku lokalnego
+            // Remove the JWT token from the encrypted local file
             SecureTokenStorage.ClearToken();
         }
 
@@ -74,7 +74,7 @@ namespace secure_task_manager_app.Services
                 dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
                 string token = result.token;
 
-                await SetJwtToken(token); // Zapis tokenu w zaszyfrowanym pliku
+                await SetJwtToken(token); // Saving the token in an encrypted file
                 Console.WriteLine("Login successful and JWT token stored securely.");
                 return true;
             }
@@ -171,7 +171,7 @@ namespace secure_task_manager_app.Services
                 if (content.Contains("Task already exists"))
                 {
                     Console.WriteLine("Task already exists on the server.");
-                    return true; // Uznamy, że zadanie jest już zsynchronizowane
+                    return true; // We acknowledge that the task is already synchronised
                 }
                 else
                 {
@@ -232,7 +232,7 @@ namespace secure_task_manager_app.Services
 
         public void Logout()
         {
-            ClearJwtToken(); // Czyszczenie tokenu przy wylogowaniu
+            ClearJwtToken(); // Clearing the token on log-off
             Console.WriteLine("User logged out and JWT token removed from secure storage.");
         }
     }

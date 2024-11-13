@@ -8,15 +8,15 @@ namespace secure_task_manager_app.Services
 {
     public static class SecureTokenStorage
     {
-        // Ścieżka do pliku, w którym będzie przechowywany zaszyfrowany token
+        // Path to the file where the encrypted token will be stored
         private static readonly string FilePath = Path.Combine(Path.GetTempPath(), "token.dat");
 
-        // Wartości klucza i IV - w produkcji powinny być generowane bezpiecznie i przechowywane w bezpiecznym magazynie.
-        private static readonly byte[] Key = GenerateKey(32); // AES-256 wymaga klucza o długości 32 bajtów.
-        private static readonly byte[] IV = GenerateIV(16);   // AES wymaga IV o długości 16 bajtów.
+        // Key and IV values - in production should be generated securely and stored in secure storage.
+        private static readonly byte[] Key = GenerateKey(32); // AES-256 requires a key length of 32 bytes.
+        private static readonly byte[] IV = GenerateIV(16);   // AES requires an IV of 16 bytes in length.
 
         /// <summary>
-        /// Zapisuje zaszyfrowany token w pliku.
+        /// Saves the encrypted token in a file.
         /// </summary>
         public static async Task SaveTokenAsync(string token)
         {
@@ -43,7 +43,7 @@ namespace secure_task_manager_app.Services
         }
 
         /// <summary>
-        /// Odczytuje i odszyfrowuje token z pliku.
+        /// Reads and decrypts the token from the file.
         /// </summary>
         public static async Task<string> GetTokenAsync()
         {
@@ -70,14 +70,14 @@ namespace secure_task_manager_app.Services
             }
             catch (CryptographicException)
             {
-                // Zwróć null, jeśli token jest uszkodzony lub niepoprawnie odszyfrowany
+                // Return null if token is corrupted or incorrectly decrypted
                 Console.WriteLine("Error: Invalid padding or corrupted token. Unable to retrieve token.");
                 return null;
             }
         }
 
         /// <summary>
-        /// Usuwa zaszyfrowany token z pliku.
+        /// Removes the encrypted token from the file.
         /// </summary>
         public static void ClearToken()
         {
@@ -86,23 +86,23 @@ namespace secure_task_manager_app.Services
         }
 
         /// <summary>
-        /// Generuje klucz o podanej długości w bajtach.
-        /// W produkcji użyj bezpiecznego przechowywania kluczy.
+        /// Generates a key of the specified length in bytes.
+        /// Use secure key storage in production.
         /// </summary>
         private static byte[] GenerateKey(int size)
         {
             var key = new byte[size];
-            RandomNumberGenerator.Fill(key); // Generuje losowy klucz
+            RandomNumberGenerator.Fill(key); // Generates a random key
             return key;
         }
 
         /// <summary>
-        /// Generuje IV o podanej długości w bajtach.
+        /// Generates an IV of the specified length in bytes.
         /// </summary>
         private static byte[] GenerateIV(int size)
         {
             var iv = new byte[size];
-            RandomNumberGenerator.Fill(iv); // Generuje losowy IV
+            RandomNumberGenerator.Fill(iv); // Generates a random IV
             return iv;
         }
     }

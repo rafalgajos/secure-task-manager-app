@@ -5,7 +5,7 @@ namespace secure_task_manager_app
     public partial class App : Application
     {
         public static string ApiBaseUrl { get; private set; }
-        public static string DatabasePassword { get; private set; } = "secure_password"; // Ustawienie hasła do bazy danych
+        public static string DatabasePassword { get; private set; } = "secure_password"; // Setting the database password
 
         public App()
         {

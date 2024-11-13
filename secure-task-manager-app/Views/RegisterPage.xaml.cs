@@ -9,7 +9,7 @@ namespace secure_task_manager_app.Views
         {
             InitializeComponent();
 
-            // Ustaw URL endpointu rejestracji na dynamicznie załadowany adres
+            // Set the registration endpoint URL to a dynamically loaded address
             string registerUrl = $"{App.ApiBaseUrl}/register_form";
             RegisterWebView.Source = registerUrl;
         }

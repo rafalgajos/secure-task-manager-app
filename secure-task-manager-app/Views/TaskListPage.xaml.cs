@@ -13,7 +13,7 @@ namespace secure_task_manager_app.Views
         public TaskListPage()
         {
             InitializeComponent();
-            _sqliteService = new SQLiteService(App.DatabasePassword); // Przekazanie hasła do konstruktora
+            _sqliteService = new SQLiteService(App.DatabasePassword); // Passing the password to the constructor
             _apiService = new ApiService();
             Tasks = new ObservableCollection<Models.Task>();
             TasksListView.ItemsSource = Tasks;
@@ -69,7 +69,7 @@ namespace secure_task_manager_app.Views
         {
             try
             {
-                // Pobieramy zadania z serwera
+                // Download tasks from the server
                 var serverTasks = await _apiService.GetTasksAsync();
                 if (serverTasks == null)
                 {
@@ -77,16 +77,16 @@ namespace secure_task_manager_app.Views
                     return;
                 }
 
-                // Czyścimy lokalną bazę danych i dodajemy wszystkie zadania z serwera na nowo
-                await _sqliteService.ClearAllTasksAsync(); // Nowa metoda do wyczyszczenia lokalnej tabeli
+                // We clean the local database and add all jobs from the server again
+                await _sqliteService.ClearAllTasksAsync(); // New method to clear the local table
 
-                // Zapisujemy wszystkie zadania z serwera w lokalnej bazie danych
+                // Save all jobs from the server in the local database
                 foreach (var serverTask in serverTasks)
                 {
                     await _sqliteService.SaveTaskAsync(serverTask);
                 }
 
-                // Aktualizacja interfejsu użytkownika z zadaniami z serwera
+                // Updating the user interface with tasks from the server
                 Tasks.Clear();
                 foreach (var task in serverTasks)
                 {

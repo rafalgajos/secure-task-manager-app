@@ -4,23 +4,23 @@
              Title="Login">
     <StackLayout Padding="20" VerticalOptions="CenterAndExpand" Spacing="20">
         
-        <!-- Logo SVG nad formularzem logowania -->
+        <!-- SVG logo above login form -->
         <Image Source="logo.svg"
                HeightRequest="150"
                HorizontalOptions="Center" />
 
-        <Label Text="Podaj nazwę użytkownika" FontSize="Medium" />
-        <Entry x:Name="UsernameEntry" Placeholder="Nazwa użytkownika" />
+        <Label Text="Enter username" FontSize="Medium" />
+        <Entry x:Name="UsernameEntry" Placeholder="Username" />
 
-        <Label Text="Podaj hasło" FontSize="Medium" />
-        <Entry x:Name="PasswordEntry" Placeholder="Hasło" IsPassword="True" />
+        <Label Text="Enter password" FontSize="Medium" />
+        <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
 
-        <Button Text="Zaloguj i Synchronizuj" Clicked="OnLoginClicked" />
+        <Button Text="Log in and Synchronize" Clicked="OnLoginClicked" />
 
-        <!-- Dodane pole tekstowe i przycisk rejestracji -->
+        <!-- Added text box and registration button -->
         <StackLayout Orientation="Vertical" HorizontalOptions="Center" Margin="0,20,0,0">
-            <Label Text="Nie masz konta?" VerticalOptions="Center" />
-            <Button Text="Stwórz konto" Clicked="OnRegisterClicked" />
+            <Label Text="Don't have an account?" VerticalOptions="Center" />
+            <Button Text="Create account" Clicked="OnRegisterClicked" />
         </StackLayout>
     </StackLayout>
 </ContentPage>

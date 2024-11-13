@@ -12,7 +12,7 @@ namespace secure_task_manager_app.Converters
             {
                 return dateTime == DateTime.MinValue ? string.Empty : dateTime.ToString("yyyy-MM-dd");
             }
-            return string.Empty; // Zwraca pusty tekst, jeśli wartość nie jest datą
+            return string.Empty; // Returns empty text if the value is not a date
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

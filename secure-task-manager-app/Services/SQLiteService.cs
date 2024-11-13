@@ -15,7 +15,7 @@ namespace secure_task_manager_app.Services
         {
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tasks_secure.db");
 
-            var options = new SQLiteConnectionString(dbPath, true, key: password); // Szyfrowanie bazy danych
+            var options = new SQLiteConnectionString(dbPath, true, key: password); // Database encryption
             _database = new SQLiteAsyncConnection(options);
             _database.CreateTableAsync<Models.Task>().Wait();
         }
