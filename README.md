@@ -8,9 +8,10 @@
 5. [Project Structure](#project-structure)
 6. [API Endpoints](#api-endpoints)
 7. [Security Measures](#security-measures)
+8. [Security Testing](#security-testing)
 8. [Running the Application](#running-the-application)
 9. [Simulating a Clickjacking Attack](#simulating-a-clickjacking-attack)
-10. [Contributing](#contributing)
+10. [Contributors](#contributors)
 11. [License](#license)
 
 ---
@@ -105,16 +106,25 @@ secure-task-manager
 │   ├── Services            # SQLite, API, and Secure Token Storage services
 │   ├── Views               # UI views (Login, Register, Task Details)
 │   └── App.xaml            # Application-wide resources and settings
-└── Backend (secure-task-sync-api)
-    ├── app.py              # Flask main application
-    ├── models.py           # SQLAlchemy models for User and Task
-    ├── auth.py             # Authentication routes
-    ├── tasks_api.py        # Task management routes
-    ├── config.py           # Application configuration (e.g., secret keys)
-    ├── limiter_config.py   # Rate limiter configuration
-    ├── requirements.txt    # Python dependencies
-    ├── start_ngrok.py      # Ngrok script for secure tunneling
-    └── templates           # HTML templates for clickjacking and registration
+├── Backend (secure-task-sync-api)
+│   ├── app.py              # Flask main application
+│   ├── models.py           # SQLAlchemy models for User and Task
+│   ├── auth.py             # Authentication routes
+│   ├── tasks_api.py        # Task management routes
+│   ├── config.py           # Application configuration (e.g., secret keys)
+│   ├── limiter_config.py   # Rate limiter configuration
+│   ├── requirements.txt    # Python dependencies
+│   ├── start_ngrok.py      # Ngrok script for secure tunneling
+│   └── templates           # HTML templates for clickjacking and registration
+└── reports                 # OWASP ZAP fuzzing test reports
+    └── endpoints
+        ├── auth
+        │   └── register    # Fuzzing report for registration endpoint
+        ├── login           # Fuzzing report for login endpoint
+        └── tasks
+            ├── add_task    # Fuzzing report for add_task endpoint
+            └── get_tasks   # Fuzzing report for get_tasks endpoint
+
 ```
 
 ---
@@ -147,6 +157,17 @@ secure-task-manager
 - **Overlay Protection:** The app on MacCatalyst, iOS and Android detects potential overlay attacks (e.g., unauthorized overlays) and responds by showing a blank screen or a message indicating inactivity.
 - **Rate Limiting**: Restrict the number of requests to prevent abuse.
 - **CORS Policies**: Only allow specific origins.
+
+## Security Testing
+
+All API endpoints were tested using **OWASP ZAP** for security vulnerabilities through fuzzing, ensuring the robustness and resilience of the system. The reports from these tests can be found in the following paths:
+
+- `reports/endpoints/auth/register` – Fuzzing report for the registration endpoint
+- `reports/endpoints/login` – Fuzzing report for the login endpoint
+- `reports/endpoints/tasks/add_task` – Fuzzing report for the add_task endpoint
+- `reports/endpoints/tasks/get_tasks` – Fuzzing report for the get_tasks endpoint
+
+These reports contain detailed information about the security validation of each endpoint and any potential issues identified during testing.
 
 ---
 
