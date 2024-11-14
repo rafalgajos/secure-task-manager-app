@@ -79,8 +79,9 @@ namespace secure_task_manager_app.Views
                     bool success = await _apiService.AddTaskAsync(task);
                     if (success)
                     {
-                        task.SyncWithBackend = false;
-                        await _sqliteService.SaveTaskAsync(task); // Zapisanie zmiany statusu SyncWithBackend
+                        // Po pomyślnej synchronizacji usuń zadanie z lokalnej bazy danych
+                        await _sqliteService.DeleteTaskAsync(task);
+                        Tasks.Remove(task); // Usuń zadanie z listy wyświetlanej w interfejsie użytkownika
                     }
                 }
 
@@ -88,16 +89,32 @@ namespace secure_task_manager_app.Views
                 var serverTasks = await _apiService.GetTasksAsync();
                 if (serverTasks != null)
                 {
-                    // Aktualizacja interfejsu użytkownika i bazy danych bez czyszczenia lokalnych zadań oznaczonych do synchronizacji
                     foreach (var serverTask in serverTasks)
                     {
-                        // Sprawdź, czy zadanie z serwera już istnieje w lokalnej bazie (po ID)
-                        var existingTask = tasksToSync.FirstOrDefault(t => t.Id == serverTask.Id);
+                        // Sprawdź, czy zadanie z serwera już istnieje w lokalnej bazie (na podstawie tytułu, daty i opisu)
+                        var existingTask = Tasks.FirstOrDefault(t =>
+                            t.Title == serverTask.Title &&
+                            t.Description == serverTask.Description &&
+                            t.DueDate == serverTask.DueDate &&
+                            t.Completed == serverTask.Completed);
+
                         if (existingTask == null)
                         {
                             // Dodaj nowe zadanie z serwera do lokalnej bazy i interfejsu użytkownika
                             await _sqliteService.SaveTaskAsync(serverTask);
                             Tasks.Add(serverTask);
+                        }
+                        else
+                        {
+                            // Aktualizacja istniejącego zadania (na wypadek, gdyby zostało zaktualizowane na serwerze)
+                            existingTask.Title = serverTask.Title;
+                            existingTask.Description = serverTask.Description;
+                            existingTask.DueDate = serverTask.DueDate;
+                            existingTask.Completed = serverTask.Completed;
+                            existingTask.Location = serverTask.Location;
+                            existingTask.LastSyncDate = serverTask.LastSyncDate;
+
+                            await _sqliteService.SaveTaskAsync(existingTask);
                         }
                     }
                 }
