@@ -1,0 +1,26 @@
+@startuml
+package "Mobile Application" {
+    [Models] 
+    [Views]
+    [Services]
+    
+    Models --> Services : Contains Models
+    Views --> Services : Utilizes Services
+}
+
+package "Backend Application" {
+    [auth.py] 
+    [tasks_api.py]
+    [models.py]
+    [Database] 
+    
+    auth.py --> models.py : Uses Models
+    tasks_api.py --> models.py : Accesses Data
+}
+
+[Database] --> models.py : Stores Data
+
+Services --> auth.py : API Requests (HTTPS + JWT)
+Services --> tasks_api.py : API Requests (HTTPS + JWT)
+
+@enduml
