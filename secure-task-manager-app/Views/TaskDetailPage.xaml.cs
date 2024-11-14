@@ -42,24 +42,12 @@ namespace secure_task_manager_app.Views
                 if (location != null)
                 {
                     Task.Location = $"{location.Latitude}, {location.Longitude}";
-                    OnPropertyChanged(nameof(Task.Location)); // Update the UI
+                    OnPropertyChanged(nameof(Task.Location));
                 }
                 else
                 {
                     await DisplayAlert("Location Error", "Could not retrieve location", "OK");
                 }
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
-                await DisplayAlert("Error", "Location not supported on this device", "OK");
-            }
-            catch (FeatureNotEnabledException fneEx)
-            {
-                await DisplayAlert("Error", "Location services are not enabled", "OK");
-            }
-            catch (PermissionException pEx)
-            {
-                await DisplayAlert("Error", "Permission to access location was denied", "OK");
             }
             catch (Exception ex)
             {
@@ -73,7 +61,7 @@ namespace secure_task_manager_app.Views
             {
                 if (Task.DueDate == null)
                 {
-                    Task.DueDate = DateTime.MinValue; // or another default value
+                    Task.DueDate = DateTime.MinValue;
                 }
 
                 await _sqliteService.SaveTaskAsync(Task);
@@ -115,10 +103,8 @@ namespace secure_task_manager_app.Views
                     }
                 }
 
-                // Remove the task from the local database
                 await _sqliteService.DeleteTaskAsync(Task);
 
-                // Remove the task from the interface list, if it exists there
                 if (_tasks != null && _tasks.Contains(Task))
                 {
                     _tasks.Remove(Task);

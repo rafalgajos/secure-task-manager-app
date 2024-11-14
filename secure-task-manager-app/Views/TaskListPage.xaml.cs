@@ -1,6 +1,7 @@
 ﻿using secure_task_manager_app.Models;
 using secure_task_manager_app.Services;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace secure_task_manager_app.Views
 {
@@ -13,7 +14,7 @@ namespace secure_task_manager_app.Views
         public TaskListPage()
         {
             InitializeComponent();
-            _sqliteService = new SQLiteService(App.DatabasePassword); // Passing the password to the constructor
+            _sqliteService = new SQLiteService(App.DatabasePassword);
             _apiService = new ApiService();
             Tasks = new ObservableCollection<Models.Task>();
             TasksListView.ItemsSource = Tasks;
@@ -69,28 +70,36 @@ namespace secure_task_manager_app.Views
         {
             try
             {
-                // Download tasks from the server
+                // Synchronizuj zadania oznaczone do synchronizacji (dodawanie zadań lokalnych na serwer)
+                var tasksToSync = await _sqliteService.GetTasksAsync();
+                tasksToSync = tasksToSync.Where(task => task.SyncWithBackend).ToList();
+
+                foreach (var task in tasksToSync)
+                {
+                    bool success = await _apiService.AddTaskAsync(task);
+                    if (success)
+                    {
+                        task.SyncWithBackend = false;
+                        await _sqliteService.SaveTaskAsync(task); // Zapisanie zmiany statusu SyncWithBackend
+                    }
+                }
+
+                // Pobierz zadania z serwera
                 var serverTasks = await _apiService.GetTasksAsync();
-                if (serverTasks == null)
+                if (serverTasks != null)
                 {
-                    await DisplayAlert("Error", "Failed to fetch tasks from server.", "OK");
-                    return;
-                }
-
-                // We clean the local database and add all jobs from the server again
-                await _sqliteService.ClearAllTasksAsync(); // New method to clear the local table
-
-                // Save all jobs from the server in the local database
-                foreach (var serverTask in serverTasks)
-                {
-                    await _sqliteService.SaveTaskAsync(serverTask);
-                }
-
-                // Updating the user interface with tasks from the server
-                Tasks.Clear();
-                foreach (var task in serverTasks)
-                {
-                    Tasks.Add(task);
+                    // Aktualizacja interfejsu użytkownika i bazy danych bez czyszczenia lokalnych zadań oznaczonych do synchronizacji
+                    foreach (var serverTask in serverTasks)
+                    {
+                        // Sprawdź, czy zadanie z serwera już istnieje w lokalnej bazie (po ID)
+                        var existingTask = tasksToSync.FirstOrDefault(t => t.Id == serverTask.Id);
+                        if (existingTask == null)
+                        {
+                            // Dodaj nowe zadanie z serwera do lokalnej bazy i interfejsu użytkownika
+                            await _sqliteService.SaveTaskAsync(serverTask);
+                            Tasks.Add(serverTask);
+                        }
+                    }
                 }
 
                 await DisplayAlert("Success", "Synchronization completed successfully.", "OK");

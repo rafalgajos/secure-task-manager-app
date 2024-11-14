@@ -40,12 +40,18 @@ namespace secure_task_manager_app.Models
 
         public DateTime LastSyncDate { get; set; }
 
-        // New property for storing location
         private string _location;
         public string Location
         {
             get => _location;
             set { _location = value; OnPropertyChanged(); }
+        }
+
+        private bool _syncWithBackend;
+        public bool SyncWithBackend
+        {
+            get => _syncWithBackend;
+            set { _syncWithBackend = value; OnPropertyChanged(); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
