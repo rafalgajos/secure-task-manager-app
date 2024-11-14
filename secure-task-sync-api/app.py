@@ -33,14 +33,19 @@ js_clickjacking_protection_enabled = True
 @app.after_request
 def set_security_headers(response):
     global clickjacking_protection_enabled, js_clickjacking_protection_enabled
+
+    # Ustawienie nagłówków X-Frame-Options i Content-Security-Policy do ochrony przed clickjackingiem
     if clickjacking_protection_enabled:
         response.headers['X-Frame-Options'] = 'DENY'
-        response.headers['Content-Security-Policy'] = "frame-ancestors 'none';"
+        response.headers['Content-Security-Policy'] = "frame-ancestors 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
     else:
+        # Nagłówek Content-Security-Policy bez ochrony frame-ancestors
+        response.headers[
+            'Content-Security-Policy'] = "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+        # Usuń nagłówek X-Frame-Options, jeśli ochrona jest wyłączona
         response.headers.pop('X-Frame-Options', None)
-        response.headers.pop('Content-Security-Policy', None)
 
-    # Add JavaScript clickjacking protection if enabled
+    # Dodaj zabezpieczenie JavaScript przed clickjackingiem, jeśli jest włączone
     if js_clickjacking_protection_enabled:
         response_data = response.get_data(as_text=True)
         response_data = response_data.replace(
@@ -49,24 +54,19 @@ def set_security_headers(response):
         )
         response.set_data(response_data)
 
-    # Additional security headers
+    # Dodatkowe nagłówki bezpieczeństwa
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
-    response.headers['Server'] = 'SecureServer'  # Hide server version details
-    response.headers['Content-Security-Policy'] = (
-        "default-src 'self'; "
-        "script-src 'self'; "
-        "style-src 'self'; "
-        "img-src 'self' data:;"
-    )
-    # Remove Server header
+
+    # Usuń nagłówek Server dla bezpieczeństwa
     if 'Server' in response.headers:
         del response.headers['Server']
 
     return response
+
 
 # Endpoint to toggle clickjacking protection headers
 @app.route('/toggle_clickjacking_protection', methods=['POST'])
