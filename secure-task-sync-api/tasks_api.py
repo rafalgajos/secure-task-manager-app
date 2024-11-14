@@ -63,16 +63,17 @@ def add_task(current_user):
         return jsonify({"error": "Title is required"}), 400
 
     try:
-        # Check if the task already exists
+        # Check if the task with the same title, description, due date, and completed status already exists for this user
         existing_task = Task.query.filter_by(
             title=data['title'],
+            description=data.get('description'),
             due_date=datetime.fromisoformat(data['due_date']) if data.get('due_date') else None,
             completed=data.get('completed', False),
             user_id=current_user.id
         ).first()
 
         if existing_task:
-            return jsonify({"message": "Task already exists"}), 200
+            return jsonify({"message": "Task with similar properties already exists"}), 200
 
         # Add new task if not found
         due_date = datetime.fromisoformat(data.get('due_date')) if data.get('due_date') else None
