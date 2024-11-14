@@ -34,18 +34,18 @@ js_clickjacking_protection_enabled = True
 def set_security_headers(response):
     global clickjacking_protection_enabled, js_clickjacking_protection_enabled
 
-    # Ustawienie nagłówków X-Frame-Options i Content-Security-Policy do ochrony przed clickjackingiem
+    # Setting X-Frame-Options and Content-Security-Policy headers to protect against clickjacking
     if clickjacking_protection_enabled:
         response.headers['X-Frame-Options'] = 'DENY'
         response.headers['Content-Security-Policy'] = "frame-ancestors 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
     else:
-        # Nagłówek Content-Security-Policy bez ochrony frame-ancestors
+        # Content-Security-Policy header without frame-ancestors protection
         response.headers[
             'Content-Security-Policy'] = "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
-        # Usuń nagłówek X-Frame-Options, jeśli ochrona jest wyłączona
+        # Remove X-Frame-Options header if protection is disabled
         response.headers.pop('X-Frame-Options', None)
 
-    # Dodaj zabezpieczenie JavaScript przed clickjackingiem, jeśli jest włączone
+    # Add JavaScript protection against clickjacking if enabled
     if js_clickjacking_protection_enabled:
         response_data = response.get_data(as_text=True)
         response_data = response_data.replace(
@@ -54,14 +54,14 @@ def set_security_headers(response):
         )
         response.set_data(response_data)
 
-    # Dodatkowe nagłówki bezpieczeństwa
+    # Additional security headers
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
 
-    # Usuń nagłówek Server dla bezpieczeństwa
+    # Remove Server header for security
     if 'Server' in response.headers:
         del response.headers['Server']
 
